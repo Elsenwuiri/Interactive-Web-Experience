@@ -196,7 +196,7 @@ function App() {
 
                             <div className="hero-photo">
                                 <img
-                                    src="public\images\photo-01.webp"
+                                    src="/images/photo-01.webp"
                                     alt="温云花"
                                 />
                             </div>
@@ -281,7 +281,7 @@ function App() {
                                 controls
                                 playsInline
                                 preload="metadata"
-                                poster="/images/photo-01.webp"
+                                x
                             >
                                 <source src="/videos/photo-15.mp4" type="video/mp4" />
                                 Browser kamu tidak mendukung pemutaran video.
