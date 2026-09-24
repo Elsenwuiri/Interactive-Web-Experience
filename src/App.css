@@ -550,6 +550,7 @@ button {
     font-size: 21px;
     line-height: 1.75;
     color: var(--brown);
+    text-align: center;
 }
 
 .letter-content p {

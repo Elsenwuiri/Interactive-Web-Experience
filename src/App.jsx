@@ -3,6 +3,7 @@ import confetti from "canvas-confetti";
 import SecretGate from "./SecretGate";
 import "./App.css";
 import { supabase } from "./lib/supabase";
+import { Analytics } from "@vercel/analytics/next"
 
 const AUTH_KEY = "birthday_site_access";
 const AUTH_DURATION = 10 * 60 * 1000;
@@ -10,52 +11,52 @@ const AUTH_DURATION = 10 * 60 * 1000;
 const photos = [
     {
         src: "/images/photo-01.webp",
-        caption: "A little moment worth remembering.",
+        caption: "lagi mejem mbak:)",
         rotation: "2deg",
     },
     {
         src: "/images/photo-02.webp",
-        caption: "Somewhere between ordinary and special.",
+        caption: "takut ke tempat serangga",
         rotation: "-1deg",
     },
     {
         src: "/images/photo-03.webp",
-        caption: "A memory I want to keep.",
+        caption: "senyum bahagia bangettt",
         rotation: "3deg",
     },
     {
         src: "/images/photo-04.webp",
-        caption: "Another little piece of us.",
+        caption: "dokter kelelahan menangani pasien",
         rotation: "-3deg",
     },
     {
         src: "/images/photo-05.webp",
-        caption: "This moment still makes me smile.",
+        caption: "senyum tipis tipis",
         rotation: "1deg",
     },
     {
         src: "/images/photo-06.webp",
-        caption: "A day worth putting in this scrapbook.",
+        caption: "'dalam nama Yesus, dalam nama Yesus'",
         rotation: "-2deg",
     },
     {
         src: "/images/photo-07.webp",
-        caption: "Thank you for this memory.",
+        caption: "OOOOOOOOOOOOOOooooooooo",
         rotation: "2deg",
     },
     {
         src: "/images/photo-08.webp",
-        caption: "One more page of our story.",
+        caption: "😋",
         rotation: "-1deg",
     },
     {
         src: "/images/photo-09.webp",
-        caption: "And many more memories to come.",
+        caption: "hmmmmmmmzzzzzz_-",
         rotation: "3deg",
     },
     {
         src: "/images/photo-10.webp",
-        caption: "Thank you for everything.",
+        caption: "aduh belum siap, wkwkwkwk",
         rotation: "-2deg",
     },
 ];
@@ -215,7 +216,7 @@ function App() {
             setReplyStatus("Something went wrong. Please try again.");
         } else {
             setReply("");
-            setReplyStatus("Your message has been saved ♡");
+            setReplyStatus("MAKASIHHH UDHH NULISSS, WKWKWKWK LOVE U SO MUCH!! ♡");
         }
 
         setIsSending(false);
@@ -440,7 +441,7 @@ function App() {
 
                         <div>
                             <p className="eyebrow">A FEW LITTLE MOMENTS</p>
-                            <h2>Our Scrapbook</h2>
+                            <h2>Your "best" photo</h2>
                         </div>
                     </div>
 
@@ -750,7 +751,7 @@ function App() {
                                 </p>
 
                                 <p className="final-signature">
-                                    Always with you ♡
+                                    Always Love You ♡
                                 </p>
                             </div>
                         )}
@@ -767,12 +768,15 @@ function App() {
                 <textarea
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
-                    placeholder="Write something for me..."
-                    maxLength={1000}
+                    placeholder="Write anything..."
+                    maxLength={10000}
                 />
+                <p className="final-signature">
+                    note: tidak menerima short message :)
+                </p>
 
                 <div className="reply-footer">
-                    <span>{reply.length}/1000</span>
+                    <span>{reply.length}/10000</span>
 
                     <button
                         onClick={sendReply}
