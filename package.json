@@ -12,6 +12,7 @@
         "node": "20.x"
     },
     "dependencies": {
+        "@supabase/supabase-js": "^2.117.1",
         "canvas-confetti": "^1.9.4",
         "react": "^19.1.1",
         "react-dom": "^19.1.1"
