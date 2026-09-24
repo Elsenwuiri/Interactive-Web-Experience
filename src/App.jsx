@@ -3,7 +3,7 @@ import confetti from "canvas-confetti";
 import SecretGate from "./SecretGate";
 import "./App.css";
 import { supabase } from "./lib/supabase";
-import { Analytics } from "@vercel/analytics/next"
+
 
 const AUTH_KEY = "birthday_site_access";
 const AUTH_DURATION = 10 * 60 * 1000;
