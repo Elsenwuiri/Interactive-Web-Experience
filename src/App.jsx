@@ -3,6 +3,7 @@ import confetti from "canvas-confetti";
 import SecretGate from "./SecretGate";
 import "./App.css";
 import { supabase } from "./lib/supabase";
+import { Analytics } from "@vercel/analytics/react";
 
 
 const AUTH_KEY = "birthday_site_access";
@@ -254,12 +255,12 @@ function App() {
         }, 100);
     };
 
-    if (!siteUnlocked) {
-        return <SecretGate onUnlock={handleUnlock} />;
-    }
-
     return (
-        <main className="site">
+        <>
+            {!siteUnlocked ? (
+                <SecretGate onUnlock={handleUnlock} />
+            ) : (
+                <main className="site">
             <audio
                 ref={audioRef}
                 src="./music/birthday-song.mp3"
@@ -797,6 +798,9 @@ function App() {
                 <p>2026</p>
             </footer>
         </main>
+            )}
+            <Analytics />
+        </>
     );
 }
 
