@@ -1,0 +1,565 @@
+.music-section {
+    position: relative;
+    min-height: 100vh;
+    padding: 120px 24px;
+    overflow: hidden;
+    background: #f7efe7;
+}
+
+.music-container {
+    position: relative;
+    z-index: 2;
+    width: min(1000px, 100%);
+    margin: 0 auto;
+}
+
+.music-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 35px;
+}
+
+.music-number {
+    padding-top: 9px;
+    color: #806d6d;
+    font-family: "DM Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+}
+
+.music-heading h2 {
+    margin: 6px 0 0;
+    color: #71383d;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(44px, 6vw, 72px);
+    font-weight: 500;
+    line-height: 0.95;
+}
+
+.music-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: min(720px, 100%);
+    margin: 0 auto 55px;
+}
+
+.music-intro p {
+    margin: 0;
+    color: #806d6d;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 23px;
+    font-style: italic;
+    line-height: 1.35;
+}
+
+.music-intro span {
+    color: #9e4f55;
+    font-size: 28px;
+    transform: rotate(-8deg);
+}
+
+.vinyl-stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 430px;
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+}
+
+.vinyl-stage.is-changing {
+    opacity: 0.55;
+    transform: scale(0.97);
+}
+
+.vinyl-record {
+    position: relative;
+    width: min(360px, 75vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at center,
+            #a45a60 0 17%,
+            #f0d8cc 17.5% 18.5%,
+            #9e4f55 19% 22%,
+            #33282a 22.5% 100%);
+    box-shadow:
+        0 25px 40px rgba(74, 55, 55, 0.2),
+        0 5px 10px rgba(74, 55, 55, 0.1);
+    transition:
+        transform 0.7s ease,
+        opacity 0.7s ease;
+}
+
+.vinyl-record::before {
+    content: "";
+    position: absolute;
+    inset: 7%;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 0 0 15px rgba(255, 255, 255, 0.025),
+        inset 0 0 0 30px rgba(0, 0, 0, 0.08),
+        inset 0 0 0 45px rgba(255, 255, 255, 0.025);
+}
+
+.vinyl-record::after {
+    content: "";
+    position: absolute;
+    inset: 2%;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle,
+            transparent 0,
+            transparent 4px,
+            rgba(255, 255, 255, 0.035) 5px,
+            transparent 6px);
+    pointer-events: none;
+}
+
+.vinyl-record.is-playing {
+    animation: vinylSpin 5s linear infinite;
+}
+
+@keyframes vinylSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.vinyl-grooves {
+    position: absolute;
+    inset: 11%;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow:
+        0 0 0 14px rgba(255, 255, 255, 0.025),
+        0 0 0 28px rgba(0, 0, 0, 0.08),
+        0 0 0 42px rgba(255, 255, 255, 0.02),
+        0 0 0 56px rgba(0, 0, 0, 0.08);
+}
+
+.vinyl-label {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 34%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #c98284;
+    color: #fffaf3;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.vinyl-track-number {
+    margin-bottom: 4px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+}
+
+.vinyl-label-title {
+    width: 75%;
+    font-family: "Caveat", cursive;
+    font-size: clamp(16px, 2vw, 23px);
+    line-height: 1;
+}
+
+.vinyl-heart {
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+.vinyl-hole {
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #33282a;
+    transform: translate(-50%, -50%);
+}
+
+.vinyl-shadow {
+    position: absolute;
+    z-index: -1;
+    bottom: 35px;
+    width: min(310px, 65vw);
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(74, 55, 55, 0.14);
+    filter: blur(14px);
+}
+
+.vinyl-note {
+    position: absolute;
+    right: 8%;
+    bottom: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    color: #806d6d;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+}
+
+.vinyl-note span:last-child {
+    color: #9e4f55;
+    font-size: 18px;
+}
+
+.music-player {
+    width: min(720px, 100%);
+    margin: -15px auto 35px;
+    padding: 25px 28px;
+    background: #fffaf3;
+    border: 1px solid rgba(113, 56, 61, 0.12);
+    box-shadow: 0 15px 35px rgba(74, 55, 55, 0.08);
+}
+
+.music-player-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.music-track-label {
+    margin: 0 0 5px;
+    color: #806d6d;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+}
+
+.music-player h3 {
+    margin: 0;
+    color: #71383d;
+    font-family: "Caveat", cursive;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.music-main-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(113, 56, 61, 0.2);
+    border-radius: 50%;
+    background: #9e4f55;
+    color: #fffaf3;
+    font-size: 16px;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.music-main-button:hover {
+    transform: scale(1.06);
+    background: #71383d;
+}
+
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.music-controls>button {
+    border: 0;
+    background: transparent;
+    color: #71383d;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.music-controls>button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.music-wave {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 35px;
+    gap: 3px;
+    overflow: hidden;
+}
+
+.music-wave span {
+    display: block;
+    width: 2px;
+    height: 8px;
+    border-radius: 5px;
+    background: #c98284;
+    opacity: 0.5;
+}
+
+.music-wave span:nth-child(2n) {
+    height: 16px;
+}
+
+.music-wave span:nth-child(3n) {
+    height: 24px;
+}
+
+.music-wave span:nth-child(5n) {
+    height: 13px;
+}
+
+.vinyl-stage:has(.vinyl-record.is-playing)~.music-player .music-wave span {
+    animation: waveMove 0.8s ease-in-out infinite alternate;
+    animation-delay: var(--delay);
+    opacity: 1;
+}
+
+@keyframes waveMove {
+    from {
+        transform: scaleY(0.55);
+    }
+
+    to {
+        transform: scaleY(1.25);
+    }
+}
+
+.track-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: min(720px, 100%);
+    margin: 0 auto;
+    border-top: 1px solid rgba(113, 56, 61, 0.15);
+}
+
+.track-card {
+    display: grid;
+    grid-template-columns: 45px 1fr 25px;
+    align-items: center;
+    gap: 10px;
+    padding: 17px 12px;
+    border: 0;
+    border-bottom: 1px solid rgba(113, 56, 61, 0.15);
+    background: transparent;
+    color: #806d6d;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.track-card:nth-child(odd) {
+    border-right: 1px solid rgba(113, 56, 61, 0.15);
+}
+
+.track-card:hover {
+    background: rgba(201, 130, 132, 0.08);
+}
+
+.track-card.is-active {
+    color: #71383d;
+    background: rgba(201, 130, 132, 0.12);
+}
+
+.track-card:disabled {
+    cursor: default;
+}
+
+.track-card-number {
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+}
+
+.track-card-title {
+    overflow: hidden;
+    font-family: "Caveat", cursive;
+    font-size: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-card-symbol {
+    color: #9e4f55;
+    text-align: right;
+}
+
+.music-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 75px;
+    text-align: center;
+}
+
+.music-message-line {
+    width: 55px;
+    height: 1px;
+    margin-bottom: 20px;
+    background: rgba(113, 56, 61, 0.25);
+}
+
+.music-message p {
+    margin: 0;
+    color: #71383d;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 1.35;
+}
+
+.music-message-heart {
+    margin-top: 15px;
+    color: #9e4f55;
+    font-size: 18px;
+}
+
+.music-background {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.music-decoration {
+    position: absolute;
+    color: rgba(158, 79, 85, 0.17);
+    font-family: "Caveat", cursive;
+}
+
+.music-decoration-one {
+    top: 14%;
+    left: 5%;
+    font-size: 60px;
+    transform: rotate(-12deg);
+}
+
+.music-decoration-two {
+    top: 32%;
+    right: 6%;
+    font-size: 45px;
+    transform: rotate(12deg);
+}
+
+.music-decoration-three {
+    bottom: 12%;
+    left: 8%;
+    font-size: 55px;
+    transform: rotate(-10deg);
+}
+
+@media (max-width: 640px) {
+    .music-section {
+        padding: 90px 16px;
+    }
+
+    .music-heading {
+        gap: 14px;
+    }
+
+    .music-heading h2 {
+        font-size: 43px;
+    }
+
+    .music-intro {
+        margin-bottom: 25px;
+    }
+
+    .music-intro p {
+        font-size: 20px;
+    }
+
+    .vinyl-stage {
+        min-height: 350px;
+    }
+
+    .vinyl-record {
+        width: min(300px, 78vw);
+    }
+
+    .vinyl-note {
+        right: 2%;
+        bottom: 45px;
+    }
+
+    .music-player {
+        padding: 20px;
+    }
+
+    .track-list {
+        grid-template-columns: 1fr;
+    }
+
+    .track-card:nth-child(odd) {
+        border-right: 0;
+    }
+
+    .track-card-title {
+        font-size: 21px;
+    }
+
+    .music-decoration {
+        display: none;
+    }
+}
+
+.music-caption {
+    margin-top: 0.65rem;
+    max-width: 520px;
+
+    font-family: "Caveat", cursive;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--muted);
+
+    min-height: 3.4em;
+}
+
+.typewriter-cursor {
+    display: inline-block;
+    margin-left: 2px;
+    animation: typewriterBlink 0.8s steps(1) infinite;
+}
+
+@keyframes typewriterBlink {
+
+    0%,
+    45% {
+        opacity: 1;
+    }
+
+    46%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .music-caption {
+        max-width: 100%;
+        font-size: 1.05rem;
+        line-height: 1.45;
+        min-height: 4.5em;
+    }
+}

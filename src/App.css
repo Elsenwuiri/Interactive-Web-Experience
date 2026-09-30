@@ -610,45 +610,6 @@ button {
     color: var(--muted);
 }
 
-/* .youtube-wrapper {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: #2f2020;
-}
-
-.youtube-wrapper iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
-
-.youtube-placeholder {
-    aspect-ratio: 16 / 9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: #eadbd0;
-    color: var(--red-dark);
-}
-
-.youtube-placeholder span {
-    font-size: 42px;
-    margin-bottom: 8px;
-}
-
-.youtube-placeholder p {
-    margin: 0 0 6px;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-}
-
-.youtube-placeholder small {
-    color: var(--muted);
-    font-size: 11px;
-} */
 
 .final {
     min-height: 80svh;
@@ -1658,16 +1619,18 @@ button {
 }
 
 .her-photo-caption {
-    position: absolute;
-    left: 13px;
-    right: 13px;
-    bottom: 6px;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 0.75rem 0.9rem 0.9rem;
+
+    white-space: normal;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-family: "Caveat", cursive;
-    font-size: 17px;
-    color: var(--brown);
+    word-break: break-word;
+
+    line-height: 1.45;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 /* Individual positions */
@@ -1874,13 +1837,16 @@ button {
         font-size: 25px;
     }
 
+    /* Pola: 2 foto sejajar | 1 foto full width | dst. */
     .her-gallery {
-        width: 90%;
+        width: 92%;
+        max-width: 480px;
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: auto;
-        gap: 18px;
+        gap: 12px;
     }
 
+    /* Reset semua foto dulu */
     .her-photo-1,
     .her-photo-2,
     .her-photo-3,
@@ -1892,24 +1858,50 @@ button {
         grid-row: auto;
     }
 
-    .her-photo-1 {
-        grid-column: 1 / 3;
+    /* Foto 1 & 2 → sejajar (auto, masing-masing 1 kolom) */
+    /* Foto 3 → full width */
+    .her-photo-3 {
+        grid-column: 1 / -1;
     }
 
-    .her-photo-4 {
-        grid-column: 1 / 3;
+    /* Foto 4 & 5 → sejajar (auto) */
+    /* Foto 6 → full width */
+    .her-photo-6 {
+        grid-column: 1 / -1;
     }
 
+    /* Foto 7 → full width */
     .her-photo-7 {
-        grid-column: 1 / 3;
+        grid-column: 1 / -1;
     }
 
     .her-photo-frame {
-        padding-bottom: 28px;
+        padding: 7px 7px 28px;
+    }
+
+    /* Foto sejajar (portrait): tinggi proporsional */
+    .her-photo-frame img {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+        height: auto;
+        max-height: none;
+        filter: saturate(0.88);
+    }
+
+    /* Foto full-width: landscape agar tidak terlalu tinggi */
+    .her-photo-3 .her-photo-frame img,
+    .her-photo-6 .her-photo-frame img,
+    .her-photo-7 .her-photo-frame img {
+        aspect-ratio: 3 / 2;
     }
 
     .her-photo-caption {
-        font-size: 15px;
+        font-size: 13px;
+        padding: 0.45rem 0.6rem 0.65rem;
+        white-space: normal;
+        overflow: visible;
+        word-break: break-word;
     }
 
     .her-video-wrapper {
@@ -1956,6 +1948,18 @@ button {
     .her-floating-three {
         left: 3%;
         font-size: 28px;
+    }
+}
+
+/* Layar sangat kecil (≤ 380px) */
+@media (max-width: 380px) {
+    .her-gallery {
+        width: 92%;
+        gap: 16px;
+    }
+
+    .her-photo-caption {
+        font-size: 12px;
     }
 }
 
@@ -2258,4 +2262,33 @@ button {
     .reply-status {
         font-size: 18px;
     }
+
+    .photo-caption {
+        padding: 0.65rem 0.7rem 0.8rem;
+        font-size: 0.82rem;
+        line-height: 1.45;
+
+        white-space: normal;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+.birthday-site {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 0.9s ease,
+        transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.birthday-site.is-opening {
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.birthday-site.is-opened {
+    opacity: 1;
+    transform: translateY(0);
 }
