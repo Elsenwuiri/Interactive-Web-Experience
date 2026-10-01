@@ -196,7 +196,7 @@ function MusicSection({ audioRef, musicEnabled, setMusicEnabled }) {
                     <span className="music-number">06</span>
                     <div>
                         <p className="eyebrow">A LITTLE SOUNDTRACK</p>
-                        <h2>Our Little Soundtrack.</h2>
+                        <h2>Our Little Soundtrack. 🎶</h2>
                     </div>
                 </div>
 

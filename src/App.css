@@ -33,6 +33,15 @@ button {
     background: var(--cream);
 }
 
+.session-fade {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+}
+
 .paper-texture {
     position: fixed;
     inset: 0;
@@ -1567,13 +1576,13 @@ button {
 /* Gallery */
 
 .her-gallery {
-    width: min(92%, 900px);
+    width: min(94%, 1080px);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-auto-rows: 95px;
-    gap: 24px;
-    align-items: start;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    gap: 40px 32px;
+    align-items: stretch;
 }
 
 .her-photo {
@@ -1591,7 +1600,10 @@ button {
 
 .her-photo-frame {
     position: relative;
-    padding: 9px 9px 30px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 9px 9px 14px;
     background: var(--paper);
     box-shadow:
         0 12px 25px rgba(74, 55, 55, 0.13),
@@ -1610,69 +1622,44 @@ button {
     z-index: 2;
 }
 
-.her-photo-frame img {
+.her-gallery .her-photo-frame img,
+.her-gallery .her-photo-frame video {
     display: block;
     width: 100%;
+    height: auto;
+    flex: 0 0 auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
+}
+
+.her-gallery .her-photo-frame img {
     filter: saturate(0.88);
 }
 
+.her-gallery .her-photo-frame video {
+    background: #1c1717;
+}
+
 .her-photo-caption {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    height: auto;
-    min-height: 0;
-    padding: 0.75rem 0.9rem 0.9rem;
+    padding: 0.7rem 0.85rem 0.45rem;
 
     white-space: normal;
-    overflow: hidden;
+    overflow-wrap: anywhere;
     word-break: break-word;
 
     line-height: 1.45;
+    font-size: 14px;
+    color: var(--brown);
     text-align: center;
     box-sizing: border-box;
 }
 
-/* Individual positions */
-
-.her-photo-1 {
-    grid-column: 1 / 5;
-    grid-row: 1 / 5;
-}
-
-.her-photo-2 {
-    grid-column: 5 / 9;
-    grid-row: 2 / 6;
-}
-
-.her-photo-3 {
-    grid-column: 9 / 13;
-    grid-row: 1 / 5;
-}
-
-.her-photo-4 {
-    grid-column: 2 / 6;
-    grid-row: 6 / 10;
-}
-
-.her-photo-5 {
-    grid-column: 6 / 10;
-    grid-row: 7 / 11;
-}
-
-.her-photo-6 {
-    grid-column: 10 / 13;
-    grid-row: 6 / 10;
-}
-
-.her-photo-7 {
-    grid-column: 4 / 9;
-    grid-row: 11 / 16;
-}
-
-.her-photo-7 .her-photo-frame img {
-    aspect-ratio: 5 / 4;
-}
+/* Photos flow naturally inside the responsive grid */
 
 /* Decorative elements */
 
@@ -1821,6 +1808,15 @@ button {
     font-size: 27px;
 }
 
+/* Tablet */
+
+@media (max-width: 1024px) {
+    .her-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 30px 22px;
+    }
+}
+
 /* Mobile */
 
 @media (max-width: 700px) {
@@ -1837,71 +1833,21 @@ button {
         font-size: 25px;
     }
 
-    /* Pola: 2 foto sejajar | 1 foto full width | dst. */
     .her-gallery {
         width: 92%;
-        max-width: 480px;
-        grid-template-columns: repeat(2, 1fr);
+        max-width: 520px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         grid-auto-rows: auto;
-        gap: 12px;
-    }
-
-    /* Reset semua foto dulu */
-    .her-photo-1,
-    .her-photo-2,
-    .her-photo-3,
-    .her-photo-4,
-    .her-photo-5,
-    .her-photo-6,
-    .her-photo-7 {
-        grid-column: auto;
-        grid-row: auto;
-    }
-
-    /* Foto 1 & 2 → sejajar (auto, masing-masing 1 kolom) */
-    /* Foto 3 → full width */
-    .her-photo-3 {
-        grid-column: 1 / -1;
-    }
-
-    /* Foto 4 & 5 → sejajar (auto) */
-    /* Foto 6 → full width */
-    .her-photo-6 {
-        grid-column: 1 / -1;
-    }
-
-    /* Foto 7 → full width */
-    .her-photo-7 {
-        grid-column: 1 / -1;
+        gap: 22px 16px;
     }
 
     .her-photo-frame {
-        padding: 7px 7px 28px;
-    }
-
-    /* Foto sejajar (portrait): tinggi proporsional */
-    .her-photo-frame img {
-        width: 100%;
-        aspect-ratio: 3 / 4;
-        object-fit: cover;
-        height: auto;
-        max-height: none;
-        filter: saturate(0.88);
-    }
-
-    /* Foto full-width: landscape agar tidak terlalu tinggi */
-    .her-photo-3 .her-photo-frame img,
-    .her-photo-6 .her-photo-frame img,
-    .her-photo-7 .her-photo-frame img {
-        aspect-ratio: 3 / 2;
+        padding: 7px 7px 10px;
     }
 
     .her-photo-caption {
-        font-size: 13px;
-        padding: 0.45rem 0.6rem 0.65rem;
-        white-space: normal;
-        overflow: visible;
-        word-break: break-word;
+        font-size: 12.5px;
+        padding: 0.5rem 0.6rem 0.35rem;
     }
 
     .her-video-wrapper {

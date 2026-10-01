@@ -23,16 +23,24 @@ The website is designed to feel less like a conventional webpage and more like o
 The website starts with a mysterious access screen instead of immediately revealing the birthday content.
 
 Features:
-
-- Password-protected access gate
+- Access-code protected gate (6-digit numeric code, default `772452`)
 - Countdown to the target date
 - Restricted-access visual presentation
-- Correct-password success state
+- Correct-code success state (`✓`)
 - Confetti effect after successful access
 - Temporary access persistence using `localStorage`
 - Access expires after 10 minutes
 
-> The access gate is intended as a surprise mechanism, not as real security. The password is stored in the client-side application and can therefore be inspected by users with technical access to the deployed JavaScript bundle.
+The gate values are defined in `SecretGate.jsx`:
+
+```js
+const ACCESS_CODE = "772452";
+const TARGET_DATE = new Date("2026-10-24T00:00:00+07:00").getTime();
+```
+
+An invalid code shows the message `Access code tidak valid.`
+
+> The access gate is intended as a surprise mechanism, not as real security. The access code is stored in the client-side application and can therefore be inspected by users with technical access to the deployed JavaScript bundle.
 
 ---
 
@@ -48,7 +56,7 @@ The opening gate contains a live countdown with:
 The countdown is tied to:
 
 ```text
-24 October 2026
+24 October 2026, 00:00 (UTC+7 / WIB)
 ```
 
 The interface intentionally avoids explicitly revealing the birthday context before access is granted.
@@ -60,7 +68,6 @@ The interface intentionally avoids explicitly revealing the birthday context bef
 After opening the gift, the website transitions into the main scrapbook experience.
 
 Includes:
-
 - Full-screen opening section
 - Personal background image
 - Soft overlay
@@ -80,14 +87,15 @@ The website uses locally hosted MP3 files instead of external music embeds.
 
 The main birthday song starts when the gift is opened.
 
-Features:
+The opening track is `/music/birthday-song.mp3`, which starts when the gift is opened and loops until paused.
 
+Features:
 - Local MP3 playback
-- Automatic looping
-- Music ON/OFF control
-- Persistent single audio controller
-- Volume control
-- Playback state synchronization
+- Automatic looping of the opening track
+- `MUSIC ON` / `MUSIC OFF` toggle button
+- Single persistent `<audio>` element shared with the soundtrack section
+- Fixed master volume (0.8), applied through fade-in / fade-out transitions
+- Playback state synchronization between the toggle and the music player
 - Audio fade transitions when changing tracks
 
 Example music directory:
@@ -95,10 +103,11 @@ Example music directory:
 ```text
 public/
 └── music/
-    ├── Birthday Song.mp3
-    ├── Song 2.mp3
-    ├── Song 3.mp3
-    └── Song 4.mp3
+    ├── birthday-song.mp3
+    ├── song-1.mp3
+    ├── song-2.mp3
+    ├── song-3.mp3
+    └── song-4.mp3
 ```
 
 ---
@@ -108,7 +117,6 @@ public/
 The website includes a multi-track scrapbook-style music player rather than continuously playing a single song.
 
 Each track contains:
-
 - Track number
 - Song title
 - Local audio file
@@ -116,7 +124,6 @@ Each track contains:
 - Vinyl-style visual representation
 
 Supported interactions:
-
 - Previous track
 - Next track
 - Play / pause
@@ -128,18 +135,17 @@ Supported interactions:
 - Animated vinyl transition
 
 When a new song is selected:
-
 ```text
 Current song
-    ↓
+↓
 Fade out
-    ↓
+↓
 Stop current track
-    ↓
+↓
 Load new track
-    ↓
+↓
 Start new track
-    ↓
+↓
 Fade in
 ```
 
@@ -152,14 +158,13 @@ Each song has its own personal caption.
 The caption is displayed using a typewriter effect.
 
 When the track changes:
-
 ```text
 Old caption
-    ↓
+↓
 Cleared
-    ↓
+↓
 New caption starts typing
-    ↓
+↓
 Blinking cursor remains
 ```
 
@@ -170,10 +175,28 @@ Example track configuration:
 ```js
 {
   id: 1,
-  title: "Birthday Song",
-  file: "/music/Birthday Song.mp3",
-  caption: "A little song for your birthday..."
-}
+  title: "Another Birthday Song",
+  file: "/music/song-1.mp3",
+  caption: "May this song accompany you throughout this new chapter of your life, and may this year be filled with many beautiful moments, joy, and blessings. 🤍"
+},
+{
+  id: 2,
+  title: "Song 2",
+  file: "/music/song-2.mp3",
+  caption: "I'm giving this song to you, hoping that whenever you listen to it, you'll always be reminded of God's goodness and feel strengthened through every step of your journey."
+},
+{
+  id: 3,
+  title: "Song 3",
+  file: "/music/song-3.mp3",
+  caption: "Honestly, this was the first song I played when I started getting closer to you… hehehe. I guess the song was already telling the story before I even realized it. :)"
+},
+{
+  id: 4,
+  title: "Song 4",
+  file: "/music/song-4.mp3",
+  caption: "The title says it all… because somehow, “Perfect” reminds me of you. Wkwkwk, a little cheesy, but I mean it. 🤍"
+},
 ```
 
 ---
@@ -183,7 +206,6 @@ Example track configuration:
 The music section uses a scrapbook-inspired vinyl record interface.
 
 Visual elements include:
-
 - Vinyl grooves
 - Center label
 - Track number
@@ -204,10 +226,9 @@ The vinyl can also be clicked directly to toggle playback.
 The website contains a collection of personal photographs displayed as scrapbook cards.
 
 Features:
-
 - Multiple memory photos
 - Individual captions
-- Slightly randomized scrapbook-style rotation
+- Hand-set scrapbook-style rotation (a fixed `--rotation` value per photo)
 - Paper-card appearance
 - Decorative tape
 - Responsive layout
@@ -217,7 +238,6 @@ Features:
 Captions automatically wrap onto additional lines on smaller screens so longer captions remain fully visible.
 
 Example:
-
 ```text
 photo-01.webp
 photo-02.webp
@@ -232,7 +252,6 @@ photo-10.webp
 The photo cards are optimized for mobile screens.
 
 Caption behavior includes:
-
 - Automatic text wrapping
 - No fixed caption height
 - No forced single-line text
@@ -245,30 +264,29 @@ This prevents longer scrapbook captions from being cut off on smartphones.
 
 ---
 
-### 10. "Just You" Photo Section
+### 10. "Our Gallery" Photo Section
 
-A dedicated section focuses on photographs of the recipient.
+A dedicated section (labeled *Our Gallery* / *PORTRAITS OF US*) focuses on photographs of the two of you.
 
 Features:
-
 - Personal photo collage
 - Individual captions
 - Scrapbook styling
-- Decorative elements
+- Floating decorative elements
 - Responsive desktop/mobile layout
-- Dedicated video section
+- Dedicated video section embedded below the gallery
 
-Example assets:
+Assets are read from the `herPhotos` array in `App.jsx`:
 
 ```text
-her-01.webp
-her-02.webp
-her-03.webp
-her-04.webp
-her-05.webp
-her-06.webp
-her-07.webp
+public/images/her/
+├── her-01.webp
+├── her-02.webp
+├── ...
+└── her-09.webp
 ```
+
+> The gallery currently renders `her-01.webp` → `her-07.webp`. Extra files (`her-08.webp`, `her-09.webp`) already exist in the folder and can be added to the `herPhotos` array.
 
 ---
 
@@ -277,20 +295,21 @@ her-07.webp
 The website contains a dedicated personal video section.
 
 Supported behavior:
-
 - Native HTML5 video controls
 - Mobile-friendly playback
 - Poster image
 - Local MP4 source
 - Automatic music coordination
 
-Example:
-
+Example (as used in `App.jsx`):
 ```text
 public/videos/
-├── birthday-video.mp4
-└── her-video.mp4
+├── photo-14.mp4   ← rendered inside the gallery section
+├── photo-15.mp4
+└── photo-16.mp4
 ```
+
+The rendered `<video>` uses `poster="/images/background-vid.webp"` and `playsInline` for mobile compatibility.
 
 ---
 
@@ -299,18 +318,17 @@ public/videos/
 The website coordinates video playback with the background music.
 
 Behavior:
-
 #### If music is playing
 
 ```text
 Music playing
-    ↓
+↓
 Video starts
-    ↓
+↓
 Music pauses
-    ↓
+↓
 Video pauses or finishes
-    ↓
+↓
 Music resumes
 ```
 
@@ -318,13 +336,13 @@ Music resumes
 
 ```text
 Music OFF
-    ↓
+↓
 Video starts
-    ↓
+↓
 Music remains OFF
-    ↓
+↓
 Video finishes
-    ↓
+↓
 Music remains OFF
 ```
 
@@ -334,31 +352,28 @@ The system tracks whether music was playing before the video started, preventing
 
 ### 13. Bible Verse Section
 
-A dedicated blessing section contains:
+A dedicated blessing section (section `02`) contains:
 
-> TUHAN memberkati engkau  
-> dan melindungi engkau.
+> "Bagi Dialah, yang dapat melakukan jauh lebih banyak dari pada yang kita doakan atau pikirkan, seperti yang ternyata dari kuasa yang bekerja di dalam kita"
 
-**Bilangan 6:24**
+**Efesus 3:20**
 
 The section uses a paper/card visual treatment consistent with the scrapbook design.
 
 ---
 
-### 14. "A Letter That Writes Itself"
+### 14. A Letter For You
 
-The website includes an interactive letter section using a typewriter animation.
+The website includes a personal letter section (section `05`) presented as a paper card with tape, stamp, and handwritten styling.
 
 Features:
+- Long-form personal letter
+- Paper card, tape, and stamp decorations
+- Handwritten-style typography
+- Signature line ("—— 来自你最爱的人，朱有贤")
+- Static, neatly typeset layout
 
-- Text appears progressively
-- Intersection Observer triggers the animation when the section enters the viewport
-- Animated typing cursor
-- Signature reveal
-- Ending message
-- Handwritten-style visual presentation
-
-The effect is intended to make the letter feel like it is being written while the recipient is reading it.
+> Note: the typewriter effect is used only for the music captions (see section 6), not for the letter text.
 
 ---
 
@@ -367,15 +382,14 @@ The effect is intended to make the letter feel like it is being written while th
 The recipient can write a response directly from the website.
 
 The reply form includes:
-
 - Textarea input
-- Character limit
+- Character limit (max 10000 characters)
 - Send button
 - Sending state
 - Success state
 - Error state
 
-Messages are stored remotely using Supabase.
+Messages are stored remotely using Supabase (table `letter_replies`). If Supabase is not configured, the form shows a setup hint instead of sending.
 
 ---
 
@@ -384,13 +398,11 @@ Messages are stored remotely using Supabase.
 The project uses Supabase for storing letter replies.
 
 Database table:
-
 ```text
 letter_replies
 ```
 
 Fields:
-
 ```text
 id
 message
@@ -399,10 +411,7 @@ created_at
 
 The birthday website uses the public `anon` client for inserting replies.
 
-A separate viewer project can retrieve the submitted replies.
-
 Required environment variables:
-
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -412,17 +421,15 @@ The `.env` file should never be committed if it contains sensitive project confi
 
 ---
 
-### 17. Separate Reply Viewer
+### 17. Reviewing Submitted Replies
 
-A separate React/Vite application is used to view submitted birthday replies.
+This website only *writes* replies into Supabase (`letter_replies`). There is no reply viewer bundled inside this repository.
 
-Purpose:
+To read the submitted messages:
+- Open the `letter_replies` table directly in the Supabase dashboard, or
+- Connect a separate, private tool to the same Supabase project.
 
-- Keep the reply viewer separate from the gift website
-- Retrieve messages from the same Supabase database
-- Provide a simple interface for reviewing responses
-
-The viewer is intentionally minimal because it serves an administrative/personal purpose rather than being part of the recipient-facing experience.
+> Keep any viewer separate from this public gift website, since reviewing replies serves an administrative/personal purpose rather than being part of the recipient-facing experience.
 
 ---
 
@@ -431,7 +438,6 @@ The viewer is intentionally minimal because it serves an administrative/personal
 The website contains a final reveal section with a stronger celebratory animation.
 
 Features:
-
 - Final message
 - Confetti animation
 - Smooth navigation to the final section
@@ -446,8 +452,7 @@ The final reveal acts as the ending of the interactive experience.
 Confetti is used selectively rather than continuously.
 
 Current triggers include:
-
-- Successful password entry
+- Successful access-code entry
 - Final reveal
 
 This keeps the effect meaningful and avoids making the website visually overwhelming.
@@ -459,7 +464,6 @@ This keeps the effect meaningful and avoids making the website visually overwhel
 The website is designed primarily for smartphone viewing.
 
 Responsive considerations include:
-
 - Two-column photo layouts
 - Wrapping captions
 - Responsive typography
@@ -473,35 +477,42 @@ Desktop layouts are also supported with larger collage arrangements and wider co
 
 ---
 
+### 21. Vercel Web Analytics
+
+The site includes Vercel Web Analytics through `@vercel/analytics/react`:
+
+```jsx
+import { Analytics } from "@vercel/analytics/react";
+// ...
+<Analytics />
+```
+
+The `<Analytics />` component is rendered at the root level and reports anonymous page views when the site is deployed on Vercel. It is optional and can be removed if analytics are not desired.
+
+---
+
 ## Technology Stack
 
 ### Frontend
-
 - React
 - Vite
 - JavaScript / JSX
 - Vanilla CSS
 
 ### Libraries / Services
-
 - `canvas-confetti`
 - `@supabase/supabase-js`
+- `@vercel/analytics`
 - Supabase
-- Vercel
+- Vercel Web Analytics
 
 ### Fonts
-
-The design uses a combination of:
-
 - Caveat
 - Cormorant Garamond
 - DM Sans
 
 ### Development Environment
-
-Recommended:
-
-- Node.js 24+
+- Node.js `20.x` (declared in `package.json` → `engines.node`)
 - npm
 
 ---
@@ -516,37 +527,39 @@ birthday-wy/
 │   │   ├── photo-02.webp
 │   │   ├── ...
 │   │   ├── photo-10.webp
+│   │   ├── photo-wen.webp
 │   │   ├── background.webp
-│   │   ├── her-01.webp
-│   │   ├── ...
-│   │   └── her-07.webp
-│   │
+│   │   ├── background-vid.webp
+│   │   └── her/
+│   │       ├── her-01.webp
+│   │       ├── ...
+│   │       └── her-09.webp
 │   ├── music/
-│   │   ├── Birthday Song.mp3
-│   │   ├── Song 2.mp3
-│   │   ├── Song 3.mp3
-│   │   └── Song 4.mp3
-│   │
+│   │   ├── birthday-song.mp3
+│   │   ├── song-1.mp3
+│   │   ├── song-2.mp3
+│   │   ├── song-3.mp3
+│   │   └── song-4.mp3
 │   └── videos/
-│       ├── birthday-video.mp4
-│       └── her-video.mp4
-│
+│       ├── photo-14.mp4
+│       ├── photo-15.mp4
+│       └── photo-16.mp4
 ├── src/
-│   ├── App.jsx
+│   ├── App.jsx            (main page: photos, gallery, letter, reply + video logic)
 │   ├── App.css
-│   ├── SecretGate.jsx
-│   ├── SecretGate.css
-│   ├── LetterWriting.jsx
-│   ├── LetterWriting.css
-│   ├── MusicSection.jsx
-│   ├── MusicSection.css
 │   ├── index.css
 │   ├── main.jsx
+│   ├── SecretGate.jsx     (access code gate + countdown)
+│   ├── SecretGate.css
+│   ├── MusicSection.jsx   (soundtrack, vinyl UI, typewriter captions)
+│   ├── MusicSection.css
 │   └── lib/
 │       └── supabase.js
-│
-├── .env
+├── index.html
+├── vite.config.js
 ├── package.json
+├── package-lock.json
+├── .env                   (git-ignored)
 └── README.md
 ```
 
@@ -557,7 +570,7 @@ birthday-wy/
 Clone the repository:
 
 ```bash
-git clone https://github.com/Elsenwuiri/wen-birthday.git
+git clone https://github.com/Elsenwuiri/birthday-wy.git
 cd birthday-wy
 ```
 
@@ -610,20 +623,91 @@ Example:
 const tracks = [
   {
     id: 1,
-    title: "Birthday Song",
-    file: "/music/Birthday Song.mp3",
-    caption: "A little song for your birthday..."
+    title: "Another Birthday Song",
+    file: "/music/song-1.mp3",
+    caption: "May this song accompany you throughout this new chapter of your life, and may this year be filled with many beautiful moments, joy, and blessings. 🤍"
   },
   {
     id: 2,
     title: "Song 2",
-    file: "/music/Song 2.mp3",
-    caption: "A song for a special memory..."
-  }
+    file: "/music/song-2.mp3",
+    caption: "I'm giving this song to you, hoping that whenever you listen to it, you'll always be reminded of God's goodness and feel strengthened through every step of your journey."
+  },
+  {
+    id: 3,
+    title: "Song 3",
+    file: "/music/song-3.mp3",
+    caption: "Honestly, this was the first song I played when I started getting closer to you… hehehe. I guess the song was already telling the story before I even realized it. :)"
+  },
+  {
+    id: 4,
+    title: "Song 4",
+    file: "/music/song-4.mp3",
+    caption: "The title says it all… because somehow, “Perfect” reminds me of you. Wkwkwk, a little cheesy, but I mean it. 🤍"
+  },
 ];
 ```
 
 The file path must exactly match the filename, including spaces and capitalization.
+
+---
+
+## Adding or Replacing Photos, Gallery Photos, and Video
+
+The scrapbook content is defined directly inside `src/App.jsx`.
+
+### Scrapbook photos (section 03)
+
+Edit the `photos` array (each item needs `src`, `caption`, and `rotation`):
+
+```js
+const photos = [
+    { src: "/images/photo-01.webp", caption: "lagi mejem mbak:)", rotation: "2deg" },
+    // ...
+];
+```
+
+### Gallery photos (section 04)
+
+Edit the `herPhotos` array. The files must exist in `public/images/her/`:
+
+```js
+const herPhotos = [
+    { src: "/images/her/her-01.webp", caption: "可爱, 呵呵呵", rotation: "-2deg" },
+    // ...
+];
+```
+
+### Video (section 04)
+
+Replace the `<source>` inside the `<video>` element and update `poster` if needed:
+
+```jsx
+<video poster="/images/background-vid.webp" playsInline>
+    <source src="/videos/photo-14.mp4" type="video/mp4" />
+</video>
+```
+
+---
+
+## Configuration Reference
+
+Key constants that control the experience:
+
+```js
+// src/SecretGate.jsx
+const ACCESS_CODE = "772452";
+const TARGET_DATE = new Date("2026-10-24T00:00:00+07:00").getTime();
+
+// src/App.jsx
+const AUTH_KEY = "birthday_site_access";
+const AUTH_DURATION = 10 * 60 * 1000; // 10 minutes
+
+// src/App.jsx (opening track)
+audio.src = "/music/birthday-song.mp3";
+```
+
+Change these values to retarget the countdown, change the access code, or adjust how long an unlocked session lasts.
 
 ---
 
@@ -655,14 +739,13 @@ Typical deployment flow:
 
 ```text
 GitHub
-   ↓
+↓
 Vercel
-   ↓
+↓
 Production Website
 ```
 
 Environment variables required by the production deployment:
-
 ```text
 VITE_SUPABASE_URL
 VITE_SUPABASE_ANON_KEY
@@ -672,20 +755,18 @@ VITE_SUPABASE_ANON_KEY
 
 ## Important Notes
 
-### Client-Side Password
+### Client-Side Access Code
 
-The access password is not a secure authentication mechanism.
+The access code is not a secure authentication mechanism.
 
-Because this is a client-side React application, the password can potentially be discovered from the built JavaScript bundle.
+Because this is a client-side React application, the access code can potentially be discovered from the built JavaScript bundle.
 
 It is appropriate for:
-
 - Personal gifts
 - Surprise pages
 - Casual access restriction
 
 It is not appropriate for:
-
 - Sensitive information
 - Private authentication
 - Confidential data
@@ -696,7 +777,6 @@ It is not appropriate for:
 Large video and audio files can significantly increase deployment size and loading time.
 
 For production optimization, consider:
-
 - Compressing MP4 files
 - Compressing WebP images
 - Keeping image dimensions appropriate for their display size
@@ -710,7 +790,6 @@ For production optimization, consider:
 This project is intentionally more than a birthday greeting.
 
 The goal is to create a small interactive experience where:
-
 - photographs become memories,
 - songs become personal messages,
 - videos become moments,

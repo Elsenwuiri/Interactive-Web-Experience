@@ -12,3 +12,11 @@ body {
     margin: 0;
     background: #f7efe7;
 }
+
+.her-photo-frame img,
+.her-photo-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

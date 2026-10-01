@@ -60,14 +60,19 @@ const photos = [
         caption: "aduh belum siap, wkwkwkwk",
         rotation: "-2deg",
     },
+    {
+        src: "/images/photo-11.webp",
+        caption: "noleh dikit, etttt",
+        rotation: "-2deg",
+    },
+    {
+        src: "/images/photo-12.webp",
+        caption: "matcha apa cheese yaaa, hmmmm",
+        rotation: "-2deg",
+    },
 ];
 
 const herPhotos = [
-    {
-        src: "/images/her/her-01.webp",
-        caption: "可爱, 呵呵呵",
-        rotation: "-2deg",
-    },
     {
         src: "/images/her/her-02.webp",
         caption: "就像52一样, 意思是我爱温, 呵呵",
@@ -79,14 +84,9 @@ const herPhotos = [
         rotation: "-1deg",
     },
     {
-        src: "/images/her/her-04.webp",
-        caption: "风景和你一样美～～",
-        rotation: "3deg",
-    },
-    {
-        src: "/images/her/her-05.webp",
-        caption: "我们再去徒步吧～～ ",
-        rotation: "-3deg",
+        src: "/images/her/her-07.webp",
+        caption: "不得不说，这张真的很酷",
+        rotation: "-2deg",
     },
     {
         src: "/images/her/her-06.webp",
@@ -94,11 +94,83 @@ const herPhotos = [
         rotation: "1deg",
     },
     {
-        src: "/images/her/her-07.webp",
+        src: "/images/her/her-05.webp",
+        caption: "我们再去徒步吧～～ ",
+        rotation: "-3deg",
+    },
+    {
+        src: "/images/her/her-04.webp",
+        caption: "风景和你一样美～～",
+        rotation: "3deg",
+    },
+    {
+        src: "/images/her/her-12.webp",
+        caption: "我有一位超酷的医生啦:)",
+        rotation: "-2deg",
+    },
+    {
+        src: "/images/her/her-11.webp",
+        caption: "我们的第一张合照 🤍",
+        rotation: "-2deg",
+    },
+    {
+        src: "/images/her/her-09.webp",
+        caption: "我们的 photobooth 还要再多一点！",
+        rotation: "-2deg",
+    },
+    {
+        type: "video",
+        src: "public/videos/photo-15.mp4",
+        caption: "太绝了！",
+        rotation: "1deg",
+    },
+    {
+        src: "/images/her/her-10.webp",
         caption: "没有别的话了，完美",
         rotation: "-2deg",
     },
+    {
+        src: "/images/her/her-14.webp",
+        caption: "可爱。",
+        rotation: "2deg",
+    },
+
 ];
+
+const easeInOutCubic = (progress) =>
+    progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+const smoothScrollTo = (targetY, duration = 1100) => {
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+
+    if (Math.abs(distance) < 1) {
+        root.style.scrollBehavior = previousBehavior;
+        return;
+    }
+
+    const startTime = performance.now();
+
+    const step = (now) => {
+        const progress = Math.min((now - startTime) / duration, 1);
+
+        window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            root.style.scrollBehavior = previousBehavior;
+        }
+    };
+
+    requestAnimationFrame(step);
+};
 
 function App() {
     const [siteUnlocked, setSiteUnlocked] = useState(false);
@@ -110,6 +182,9 @@ function App() {
     const [isSending, setIsSending] = useState(false);
 
     const audioRef = useRef(null);
+    const overlayRef = useRef(null);
+    const sessionEndingRef = useRef(false);
+    const welcomeConfettiRef = useRef(false);
 
     useEffect(() => {
         const savedAccess = localStorage.getItem(AUTH_KEY);
@@ -129,6 +204,57 @@ function App() {
             setSiteUnlocked(false);
         }
     }, []);
+
+    useEffect(() => {
+        if (!siteUnlocked) return undefined;
+
+        let lastWrite = 0;
+
+        const markActivity = () => {
+            const now = Date.now();
+
+            if (now - lastWrite < 3000) return;
+
+            lastWrite = now;
+            localStorage.setItem(AUTH_KEY, String(now));
+        };
+
+        markActivity();
+
+        const events = [
+            "mousemove",
+            "mousedown",
+            "keydown",
+            "scroll",
+            "touchstart",
+            "wheel",
+        ];
+
+        events.forEach((event) =>
+            window.addEventListener(event, markActivity, { passive: true })
+        );
+
+        return () => {
+            events.forEach((event) =>
+                window.removeEventListener(event, markActivity)
+            );
+        };
+    }, [siteUnlocked]);
+
+    useEffect(() => {
+        if (!siteUnlocked) return undefined;
+
+        const interval = setInterval(() => {
+            const saved = Number(localStorage.getItem(AUTH_KEY));
+
+            if (!saved || Date.now() - saved >= AUTH_DURATION) {
+                beginSessionEnd();
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [siteUnlocked]);
 
     const wasAudioPlayingBeforeVideo = useRef(false);
 
@@ -187,9 +313,133 @@ function App() {
         });
     };
 
+    const fadeOverlayIn = (duration = 700) =>
+        new Promise((resolve) => {
+            const element = overlayRef.current;
+
+            if (!element) {
+                resolve();
+                return;
+            }
+
+            element.style.transition = "none";
+            element.style.opacity = "0";
+            element.style.pointerEvents = "auto";
+            void element.offsetWidth;
+            element.style.transition = `opacity ${duration}ms ease`;
+            element.style.opacity = "1";
+
+            setTimeout(resolve, duration);
+        });
+
+    const fadeOverlayOut = (duration = 900) =>
+        new Promise((resolve) => {
+            const element = overlayRef.current;
+
+            if (!element) {
+                resolve();
+                return;
+            }
+
+            element.style.transition = `opacity ${duration}ms ease`;
+            element.style.opacity = "0";
+            element.style.pointerEvents = "none";
+
+            setTimeout(resolve, duration);
+        });
+
+    const beginSessionEnd = async () => {
+        if (sessionEndingRef.current) return;
+
+        sessionEndingRef.current = true;
+
+        await fadeOverlayIn();
+        localStorage.removeItem(AUTH_KEY);
+        setSiteUnlocked(false);
+        await fadeOverlayOut();
+
+        sessionEndingRef.current = false;
+    };
+
+    const fireWelcomeConfetti = () => {
+        if (welcomeConfettiRef.current) return;
+
+        welcomeConfettiRef.current = true;
+
+        const colors = ["#9e4f55", "#c98284", "#71383d", "#eea9ab", "#f7efe7"];
+
+        confetti({
+            particleCount: 90,
+            spread: 100,
+            startVelocity: 45,
+            origin: { y: 0.65 },
+            colors,
+        });
+
+        const end = Date.now() + 1800;
+
+        const frame = () => {
+            confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 60,
+                origin: { x: 0, y: 0.72 },
+                colors,
+            });
+            confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 60,
+                origin: { x: 1, y: 0.72 },
+                colors,
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        };
+
+        requestAnimationFrame(frame);
+    };
+
+    const fireOpenConfetti = () => {
+        const colors = ["#9e4f55", "#c98284", "#71383d", "#eea9ab", "#f7efe7"];
+
+        confetti({
+            particleCount: 130,
+            spread: 90,
+            startVelocity: 50,
+            origin: { y: 0.6 },
+            colors,
+        });
+    };
+
     const handleUnlock = () => {
         localStorage.setItem(AUTH_KEY, String(Date.now()));
+
+        const element = overlayRef.current;
+
+        if (element) {
+            element.style.transition = "none";
+            element.style.opacity = "1";
+            element.style.pointerEvents = "auto";
+        }
+
         setSiteUnlocked(true);
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (!element) return;
+
+                element.style.transition = "opacity 1000ms ease";
+                element.style.opacity = "0";
+                element.style.pointerEvents = "none";
+            });
+        });
+
+        setTimeout(() => {
+            fireWelcomeConfetti();
+        }, 1100);
     };
 
     const musicWasPlaying = useRef(false);
@@ -259,6 +509,15 @@ function App() {
 
     const openGift = async () => {
         setOpened(true);
+        fireOpenConfetti();
+
+        const target = document.getElementById("birthday");
+
+        if (target) {
+            const targetY =
+                target.getBoundingClientRect().top + window.scrollY;
+            smoothScrollTo(targetY, 1200);
+        }
 
         const audio = audioRef.current;
 
@@ -276,12 +535,6 @@ function App() {
                 setMusicEnabled(false);
             }
         }
-
-        setTimeout(() => {
-            document.getElementById("birthday")?.scrollIntoView({
-                behavior: "smooth",
-            });
-        }, 300);
     };
 
     const sendReply = async () => {
@@ -349,6 +602,8 @@ function App() {
 
     return (
         <>
+            <div ref={overlayRef} className="session-fade" />
+
             {!siteUnlocked ? (
                 <SecretGate onUnlock={handleUnlock} />
             ) : (
@@ -393,7 +648,7 @@ function App() {
                             <div className="small-label">24 OCTOBER 2026</div>
 
                             <div className="recipient">
-                                给<span>温云花</span>
+                                给<span>温云花❤️</span>
                             </div>
 
                             <div className="envelope-line" />
@@ -489,7 +744,7 @@ function App() {
                                 <span>02</span>
                                 <div>
                                     <p className="eyebrow">SOMETHING TO KEEP</p>
-                                    <h2>Bible Verse</h2>
+                                    <h2>Bible Verse ✝️</h2>
                                 </div>
                             </div>
 
@@ -515,7 +770,7 @@ function App() {
                                 <span>03</span>
                                 <div>
                                     <p className="eyebrow">A FEW LITTLE MOMENTS</p>
-                                    <h2>Your "best" photos :)</h2>
+                                    <h2>Your "best" photos :) 😗</h2>
                                 </div>
                             </div>
 
@@ -562,7 +817,7 @@ function App() {
                                 <span>04</span>
                                 <div>
                                     <p className="eyebrow">PORTRAITS OF US</p>
-                                    <h2>Our Gallery</h2>
+                                    <h2>Our Gallery 🥰</h2>
                                 </div>
                             </div>
 
@@ -587,11 +842,23 @@ function App() {
                                         style={{ "--rotation": photo.rotation }}
                                     >
                                         <div className="her-photo-frame">
-                                            <img
-                                                src={photo.src}
-                                                alt={`Portrait ${index + 1}`}
-                                                loading="lazy"
-                                            />
+                                            {photo.type === "video" ? (
+                                                <video
+                                                    src={photo.src}
+                                                    autoPlay
+                                                    muted
+                                                    loop
+                                                    playsInline
+                                                    preload="metadata"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={photo.src}
+                                                    alt={`Portrait ${index + 1}`}
+                                                    loading="lazy"
+                                                />
+                                            )}
+
                                             <div className="her-photo-caption">
                                                 {photo.caption}
                                             </div>
@@ -658,7 +925,7 @@ function App() {
                                     <p>A LETTER FOR YOU</p>
                                 </div>
 
-                                <h2>Dear 温云花,</h2>
+                                <h2>Dear 温云花 ❤️,</h2>
 
                                 <div className="letter-content">
                                     <p>
