@@ -777,7 +777,7 @@ function App() {
                                 <div className="hero-photo-frame">
                                     <div className="photo-tape" />
                                     <div className="hero-photo">
-                                        <img src="/images/photo-wen.webp" alt="温云花" />
+                                        <img src="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-wen.webp" alt="温云花" />
                                     </div>
                                     <p className="photo-note">the birthday girl ♡</p>
                                 </div>
