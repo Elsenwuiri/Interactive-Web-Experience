@@ -9,6 +9,28 @@ import MusicSection from "./MusicSection";
 const AUTH_KEY = "birthday_site_access";
 const AUTH_DURATION = 10 * 60 * 1000;
 
+const readStoredAccess = () => {
+    try {
+        const savedAccess = localStorage.getItem(AUTH_KEY);
+
+        if (!savedAccess) return false;
+
+        const loginTime = Number(savedAccess);
+
+        if (
+            !Number.isFinite(loginTime) ||
+            Date.now() - loginTime >= AUTH_DURATION
+        ) {
+            localStorage.removeItem(AUTH_KEY);
+            return false;
+        }
+
+        return true;
+    } catch {
+        return false;
+    }
+};
+
 const photos = [
     {
         src: "/images/photo-01.webp",
@@ -32,7 +54,7 @@ const photos = [
     },
     {
         src: "/images/photo-05.webp",
-        caption: "senyum tipis tipis",
+        caption: "makasihhh fotonya, WKWKWKWK",
         rotation: "1deg",
     },
     {
@@ -120,7 +142,7 @@ const herPhotos = [
     },
     {
         type: "video",
-        src: "public/videos/photo-15.mp4",
+        src: "/videos/photo-15.mp4",
         caption: "太绝了！",
         rotation: "1deg",
     },
@@ -135,6 +157,21 @@ const herPhotos = [
         rotation: "2deg",
     },
 
+];
+
+const bibleVerses = [
+    {
+        reference: "Efesus 3:20",
+        text: "\"Bagi Dialah, yang dapat melakukan jauh lebih banyak dari pada yang kita doakan atau pikirkan, seperti yang ternyata dari kuasa yang bekerja di dalam kita\"",
+    },
+    {
+        reference: "Yeremia 29:11",
+        text: "\"Sebab Aku ini mengetahui rancangan-rancangan apa yang ada pada-Ku mengenai kamu, demikianlah firman TUHAN, yaitu rancangan damai sejahtera dan bukan rancangan kecelakaan, untuk memberikan kepadamu hari depan yang penuh harapan\"",
+    },
+    {
+        reference: "Mazmur 91:11",
+        text: "\"Sebab malaikat-malaikat-Nya akan diperintahkan-Nya kepadamu untuk menjaga engkau di segala jalanmu\"",
+    },
 ];
 
 const easeInOutCubic = (progress) =>
@@ -173,37 +210,20 @@ const smoothScrollTo = (targetY, duration = 1100) => {
 };
 
 function App() {
-    const [siteUnlocked, setSiteUnlocked] = useState(false);
+    const [siteUnlocked, setSiteUnlocked] = useState(readStoredAccess);
     const [opened, setOpened] = useState(false);
     const [finalReveal, setFinalReveal] = useState(false);
     const [musicEnabled, setMusicEnabled] = useState(false);
     const [reply, setReply] = useState("");
     const [replyStatus, setReplyStatus] = useState("");
     const [isSending, setIsSending] = useState(false);
+    const [currentVerse, setCurrentVerse] = useState(0);
 
     const audioRef = useRef(null);
     const overlayRef = useRef(null);
     const sessionEndingRef = useRef(false);
     const welcomeConfettiRef = useRef(false);
-
-    useEffect(() => {
-        const savedAccess = localStorage.getItem(AUTH_KEY);
-
-        if (!savedAccess) {
-            setSiteUnlocked(false);
-            return;
-        }
-
-        const loginTime = Number(savedAccess);
-        const elapsed = Date.now() - loginTime;
-
-        if (elapsed < AUTH_DURATION) {
-            setSiteUnlocked(true);
-        } else {
-            localStorage.removeItem(AUTH_KEY);
-            setSiteUnlocked(false);
-        }
-    }, []);
+    const verseTouchStart = useRef(0);
 
     useEffect(() => {
         if (!siteUnlocked) return undefined;
@@ -507,6 +527,37 @@ function App() {
         }
     };
 
+    const goToVerse = (index) => {
+        setCurrentVerse(index);
+    };
+
+    const nextVerse = () => {
+        setCurrentVerse((prev) => (prev + 1) % bibleVerses.length);
+    };
+
+    const prevVerse = () => {
+        setCurrentVerse(
+            (prev) => (prev - 1 + bibleVerses.length) % bibleVerses.length
+        );
+    };
+
+    const handleVerseTouchStart = (event) => {
+        verseTouchStart.current = event.touches[0].clientX;
+    };
+
+    const handleVerseTouchEnd = (event) => {
+        const delta =
+            event.changedTouches[0].clientX - verseTouchStart.current;
+
+        if (Math.abs(delta) < 40) return;
+
+        if (delta < 0) {
+            nextVerse();
+        } else {
+            prevVerse();
+        }
+    };
+
     const openGift = async () => {
         setOpened(true);
         fireOpenConfetti();
@@ -523,7 +574,7 @@ function App() {
 
         if (audio) {
             try {
-                audio.src = "/music/birthday-song.mp3";
+                audio.src = "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Musics/birthday-song.mp3";
                 audio.currentTime = 0;
                 audio.volume = 0;
                 audio.load();
@@ -546,7 +597,7 @@ function App() {
         setReplyStatus("");
 
         if (!supabase) {
-            setReplyStatus("Supabase URL/Key belum dikonfigurasi di .env ♡");
+            setReplyStatus("Supabase URL/Key belum dikonfigurasi di .env ♡, screenshoot kirim ke aku yaakkk");
             setIsSending(false);
             return;
         }
@@ -750,11 +801,71 @@ function App() {
 
                             <div className="verse-content">
                                 <span className="verse-mark">“</span>
-                                <blockquote>
-                                    "Bagi Dialah, yang dapat melakukan jauh lebih banyak dari pada yang kita doakan atau pikirkan, seperti yang ternyata dari kuasa yang bekerja di dalam kita"
-                                </blockquote>
-                                <div className="verse-line" />
-                                <p className="verse-reference">Efesus 3:20</p>
+
+                                <div
+                                    className="verse-carousel"
+                                    onTouchStart={handleVerseTouchStart}
+                                    onTouchEnd={handleVerseTouchEnd}
+                                >
+                                    <div
+                                        className="verse-track"
+                                        style={{
+                                            transform: `translateX(-${currentVerse * 100
+                                                }%)`,
+                                        }}
+                                    >
+                                        {bibleVerses.map((verse) => (
+                                            <div
+                                                className="verse-slide"
+                                                key={verse.reference}
+                                            >
+                                                <blockquote>
+                                                    {verse.text}
+                                                </blockquote>
+                                                <div className="verse-line" />
+                                                <p className="verse-reference">
+                                                    {verse.reference}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="verse-controls">
+                                    <button
+                                        type="button"
+                                        className="verse-arrow"
+                                        onClick={prevVerse}
+                                        aria-label="Ayat sebelumnya"
+                                    >
+                                        ‹
+                                    </button>
+
+                                    <div className="verse-dots">
+                                        {bibleVerses.map((verse, index) => (
+                                            <button
+                                                key={verse.reference}
+                                                type="button"
+                                                className={`verse-dot ${index === currentVerse
+                                                    ? "is-active"
+                                                    : ""
+                                                    }`}
+                                                onClick={() => goToVerse(index)}
+                                                aria-label={`Ayat ${index + 1
+                                                    }`}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="verse-arrow"
+                                        onClick={nextVerse}
+                                        aria-label="Ayat berikutnya"
+                                    >
+                                        ›
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="verse-note">
@@ -770,7 +881,7 @@ function App() {
                                 <span>03</span>
                                 <div>
                                     <p className="eyebrow">A FEW LITTLE MOMENTS</p>
-                                    <h2>Your "best" photos :) 😗</h2>
+                                    <h2>Your "Best" Photos :) 😗</h2>
                                 </div>
                             </div>
 
@@ -845,6 +956,7 @@ function App() {
                                             {photo.type === "video" ? (
                                                 <video
                                                     src={photo.src}
+                                                    controls
                                                     autoPlay
                                                     muted
                                                     loop
@@ -898,7 +1010,7 @@ function App() {
                                         onEnded={handleVideoEnded}
                                     >
                                         <source
-                                            src="/videos/photo-14.mp4"
+                                            src="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Videos/photo-14.mp4"
                                             type="video/mp4"
                                         />
                                         Browser kamu tidak mendukung video.
@@ -1057,7 +1169,7 @@ function App() {
                             maxLength={10000}
                         />
                         <p className="final-signature">
-                            note: tidak menerima short message :)
+                            note: nggak menerima short messages :)
                         </p>
 
                         <div className="reply-footer">

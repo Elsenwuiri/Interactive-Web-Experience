@@ -18,29 +18,57 @@ The website is designed to feel less like a conventional webpage and more like o
 
 ## Features
 
-### 1. Secret Access Gate
+### 1. Layered Secret Gate
 
-The website starts with a mysterious access screen instead of immediately revealing the birthday content.
+The website opens with a layered, riddle-based gate instead of immediately revealing the birthday content. Two riddles and a time lock guard the entrance, in this order:
+
+```text
+RIDDLE 01 → PASSKEY 01 → TIME LOCK → 24 OCTOBER 2026 → RIDDLE 02 → PASSKEY 02 → ACCESS GRANTED
+```
 
 Features:
-- Access-code protected gate (6-digit numeric code, default `772452`)
-- Countdown to the target date
-- Restricted-access visual presentation
-- Correct-code success state (`✓`)
+- Riddle 01 before the target date (6-digit code entered as three 2-digit boxes)
+- Solving Riddle 01 early only shows the `ACCESS LOCKED` screen with the live countdown
+- Time lock based on the visitor's local clock (`24.10.2026`)
+- At midnight Riddle 01 disappears and Riddle 02 becomes the only active riddle (in-page transition, no reload)
+- A short notice (`eh... ada yang berubah.`) introduces Riddle 02 the first time it activates
+- Late visitors see `🔒 SECOND CLUE LOCKED` and can reopen Riddle 01 with the `I THINK I REMEMBER` button
+- Correct-code success state (`✓`), existing `VERIFYING... → ACCESS GRANTED` sequence
 - Confetti effect after successful access
 - Temporary access persistence using `localStorage`
 - Access expires after 10 minutes
 
-The gate values are defined in `SecretGate.jsx`:
+The gate only opens when all three layers are satisfied:
 
 ```js
-const ACCESS_CODE = "772452";
-const TARGET_DATE = new Date("2026-10-24T00:00:00+07:00").getTime();
+const canAccessWebsite = riddle1Solved && riddle2Solved && isTargetDateReached;
 ```
 
-An invalid code shows the message `Access code tidak valid.`
+Riddle progress is permanent and separate from the 10-minute viewing session:
 
-> The access gate is intended as a surprise mechanism, not as real security. The access code is stored in the client-side application and can therefore be inspected by users with technical access to the deployed JavaScript bundle.
+```js
+localStorage.getItem("riddle1Solved"); // "true" once Riddle 01 was solved
+localStorage.getItem("riddle2Solved"); // "true" once Riddle 02 was solved
+```
+
+All gate values live in `src/secretGateConfig.js`:
+
+```js
+export const SECRET_GATE_CONFIG = {
+    firstPasskey: "772452",
+    secondPasskey: "123456",
+    targetDate: "2026-10-24T00:00:00",
+    lockedMessage: {
+        title: "ACCESS LOCKED",
+        message: "udahh buka riddle tapi belom waktunyaa, wkwkwkwk",
+        subtitle: "Sabar sedikit lagi...",
+    },
+};
+```
+
+An invalid code reuses the existing playful error messages, and passkeys are never rendered in the UI.
+
+> The gate is intended as a surprise/puzzle experience, not as real security. The passkeys live in the client-side application and can therefore be inspected by users with technical access to the deployed JavaScript bundle.
 
 ---
 
@@ -56,7 +84,7 @@ The opening gate contains a live countdown with:
 The countdown is tied to:
 
 ```text
-24 October 2026, 00:00 (UTC+7 / WIB)
+24 October 2026, 00:00 (visitor's local time, configured in src/secretGateConfig.js)
 ```
 
 The interface intentionally avoids explicitly revealing the birthday context before access is granted.
@@ -549,8 +577,9 @@ birthday-wy/
 │   ├── App.css
 │   ├── index.css
 │   ├── main.jsx
-│   ├── SecretGate.jsx     (access code gate + countdown)
+│   ├── SecretGate.jsx     (layered riddle gate + time lock)
 │   ├── SecretGate.css
+│   ├── secretGateConfig.js (passkeys, target date, locked-page copy)
 │   ├── MusicSection.jsx   (soundtrack, vinyl UI, typewriter captions)
 │   ├── MusicSection.css
 │   └── lib/
@@ -695,9 +724,17 @@ Replace the `<source>` inside the `<video>` element and update `poster` if neede
 Key constants that control the experience:
 
 ```js
-// src/SecretGate.jsx
-const ACCESS_CODE = "772452";
-const TARGET_DATE = new Date("2026-10-24T00:00:00+07:00").getTime();
+// src/secretGateConfig.js
+export const SECRET_GATE_CONFIG = {
+    firstPasskey: "772452",
+    secondPasskey: "123456",
+    targetDate: "2026-10-24T00:00:00", // visitor's local time
+    lockedMessage: {
+        title: "ACCESS LOCKED",
+        message: "udahh buka riddle tapi belom waktunyaa, wkwkwkwk",
+        subtitle: "Sabar sedikit lagi...",
+    },
+};
 
 // src/App.jsx
 const AUTH_KEY = "birthday_site_access";
@@ -707,7 +744,7 @@ const AUTH_DURATION = 10 * 60 * 1000; // 10 minutes
 audio.src = "/music/birthday-song.mp3";
 ```
 
-Change these values to retarget the countdown, change the access code, or adjust how long an unlocked session lasts.
+Change these values to retarget the countdown, change either passkey, rewrite the locked-page copy, or adjust how long an unlocked session lasts.
 
 ---
 

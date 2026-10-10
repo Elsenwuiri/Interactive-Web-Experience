@@ -1,10 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./SecretGate.css";
+import {
+    FIRST_RIDDLE_PARTS,
+    RIDDLE_STORAGE_KEYS,
+    SECOND_RIDDLE_PARTS,
+    SECRET_GATE_CONFIG,
+    TARGET_DATE,
+    formatGateDate,
+    readFlag,
+    writeFlag,
+    readGateStep,
+    writeGateStep,
+} from "./secretGateConfig";
 
-const SECRET_PARTS = import.meta.env.VITE_SECRET_PARTS.split(",").map((value) => value.trim());
-const TARGET_DATE = new Date("2026-10-24T00:00:00+07:00").getTime();
+// Owner bypass. Checked separately from the riddles so it never affects riddle state.
+const MASTERKEY = import.meta.env.VITE_MASTERKEY;
+const MASTER_PARTS = MASTERKEY.match(/.{1,2}/g) || [];
 
-const CLUES = [
+// Riddle 2's hint block mirrors Riddle 1 exactly: one reveal button in the
+// header, then hint cards appear in sequence (not one button per card).
+const SECOND_RIDDLE_HINTS = [
+    "Dua angka pertama, saat ini ditampilkan seseorang sebagai pengingat di sebuah \"platfrom\" sebagai penguat. tapi hanya 2 angka terakhir saja",
+    "Dua angka berikutnya merupakan angka yang pertama kali terlihat ketika seseorang sedang stalking aku",
+    "Dua angka terakhir menandai bulan ketika seseorang yang berjiwa seperti si kembar pertama kali hadir di dunia.",
+];
+const RIDDLE_TWO_HINT_LABELS = ["HINT 01", "HINT 02", "HINT 03"];
+
+const RIDDLE_ONE_CLUES = [
     "Dua angka pertama adalah sesuatu yang hampir selalu hadir ketika seseorang membagikan cerita singkatnya.",
     "Dua angka berikutnya menggambarkan sejauh mana perjalanan seseorang telah berjalan.",
     "Dua angka terakhir mungkin tidak berarti banyak bagi orang lain.\n\nTapi mungkin berbeda bagi kita.",
@@ -17,8 +39,8 @@ const ERROR_MESSAGES = [
     "bukannn",
     "dikittt lagiii.",
     "terlalu di-ini-in.",
-    "Semangatt sayangg, wkwkwkwkwk",
-    "ayo ditebak lagiiiii"
+    "Semangatt sayangg, wkwkwkwk",
+    "ayo ditebak lagiiiii",
 ];
 
 const WAIT_TEXTS = [
@@ -39,6 +61,22 @@ const WAIT_TEXTS = [
     "yaudahh dehh terakhirr",
     "wkwkwkw serius habis ini",
 ];
+
+const NOTICE_TEXT = "eh... ada yang berubah.";
+const RECOVERY_HINT =
+    "Sebelum mencari jawaban yang baru,\ncoba ingat kembali jawaban yang pertama.";
+const RECOVERY_SUCCESS_TEXT = "Nah... akhirnya ketemu juga. Semangat riddle ke-2nya sayangggg, wkwkwwkwk";
+const RIDDLE_TWO_LOCKED_TEXT = "Sepertinya ada sesuatu yang belum kamu selesaikan.";
+
+const NOTICE_DURATION = 2400;
+const RECOVERY_SUCCESS_DURATION = 1900;
+const RIDDLE_ONE_SUCCESS_DURATION = 900;
+// WAIT TEXT stays on screen before the click-through starts. Same timing as the
+// original sequence (waiting at 4400ms, click-through at 8900ms).
+const WAIT_TEXT_DURATION = 4500;
+
+// Riddle 1 owns the screen until the time lock opens the second layer.
+const RIDDLE_ONE_PHASES = ["riddle1", "riddle1Solved", "locked"];
 
 function getTimeRemaining() {
     const difference = TARGET_DATE - Date.now();
@@ -62,26 +100,325 @@ function getTimeRemaining() {
     };
 }
 
+function isTargetDateReached() {
+    return Date.now() >= TARGET_DATE;
+}
+
+// Riddle 1 is history once the second layer is active, so riddle 2 is the only
+// active riddle: unlocked when riddle 1 was solved, locked when it was skipped.
+function resolveRiddleTwoPhase(riddleOneIsSolved) {
+    if (!readFlag(RIDDLE_STORAGE_KEYS.notice)) return "notice";
+
+    return riddleOneIsSolved || readFlag(RIDDLE_STORAGE_KEYS.riddleOne)
+        ? "riddle2"
+        : "riddle2Locked";
+}
+
+function resolvePostRiddleOnePhase() {
+    if (!isTargetDateReached()) return "locked";
+
+    return resolveRiddleTwoPhase(true);
+}
+
+// The persisted gate step ("waiting" | "clicks:<index>") is read before the very
+// first render, so a refresh resumes on WAIT TEXT instead of replaying VERIFYING.
+function getInitialPhase(gateStep = "") {
+    if (gateStep === "waiting") return "waiting";
+    if (gateStep.startsWith("clicks:")) return "clicks";
+
+    if (!isTargetDateReached()) {
+        return readFlag(RIDDLE_STORAGE_KEYS.riddleOne) ? "locked" : "riddle1";
+    }
+
+    return resolveRiddleTwoPhase(readFlag(RIDDLE_STORAGE_KEYS.riddleOne));
+}
+
+function getInitialClickStage(gateStep = "") {
+    if (!gateStep.startsWith("clicks:")) return 0;
+
+    const stage = Number(gateStep.slice("clicks:".length));
+
+    if (!Number.isInteger(stage) || stage < 0) return 0;
+
+    return Math.min(stage, WAIT_TEXTS.length - 1);
+}
+
+// Shared 2-digit entry used by riddle 1, riddle 2 and the riddle-1 recovery.
+// Passkeys never reach the UI: only what the visitor typed is ever rendered.
+function usePasskeyEntry({
+    passkeyParts,
+    enabled,
+    onTyping,
+    onWrong,
+    onSolved,
+    onAlternateSolved,
+}) {
+    const [values, setValues] = useState(() => passkeyParts.map(() => ""));
+    const [solvedFlags, setSolvedFlags] = useState(() =>
+        passkeyParts.map(() => false)
+    );
+    const inputRefs = useRef([]);
+
+    const solvedAll = solvedFlags.every(Boolean);
+
+    const handleChange = (index, rawValue) => {
+        if (!enabled || solvedFlags[index] || solvedAll) return;
+
+        onTyping();
+
+        const digits = rawValue.replace(/\D/g, "").slice(0, 2);
+
+        if (digits.length < 2) {
+            setValues((prev) => {
+                const next = [...prev];
+                next[index] = digits;
+                return next;
+            });
+            return;
+        }
+
+        const matchesPasskey = digits === passkeyParts[index];
+
+        const priorMatchesAlternate = values
+            .slice(0, index)
+            .every((part, partIndex) => part === MASTER_PARTS[partIndex]);
+
+        const matchesAlternate =
+            priorMatchesAlternate && digits === MASTER_PARTS[index];
+
+        if (!matchesPasskey && !matchesAlternate) {
+            setValues((prev) => {
+                const next = [...prev];
+                next[index] = "";
+                return next;
+            });
+
+            onWrong();
+            return;
+        }
+
+        const nextValues = [...values];
+        nextValues[index] = digits;
+        setValues(nextValues);
+
+        const nextInput = inputRefs.current[index + 1];
+        if (nextInput) nextInput.focus();
+
+        if (!matchesPasskey) {
+            if (nextValues.join("") === MASTERKEY) onAlternateSolved();
+            return;
+        }
+
+        const nextSolved = [...solvedFlags];
+        nextSolved[index] = true;
+        setSolvedFlags(nextSolved);
+
+        if (nextSolved.every(Boolean)) onSolved();
+    };
+
+    return { values, solvedFlags, solvedAll, inputRefs, handleChange };
+}
+
 function SecretGate({ onUnlock }) {
-    const [parts, setParts] = useState(["", "", ""]);
-    const [solved, setSolved] = useState([false, false, false]);
+    const [riddle1Solved, setRiddle1Solved] = useState(() =>
+        readFlag(RIDDLE_STORAGE_KEYS.riddleOne)
+    );
+    const [riddle2Solved, setRiddle2Solved] = useState(() =>
+        readFlag(RIDDLE_STORAGE_KEYS.riddleTwo)
+    );
+    const [dateReached, setDateReached] = useState(isTargetDateReached);
     const [cluesRevealed, setCluesRevealed] = useState(0);
+    // Riddle 2 memakai pola hint yang sama dengan Riddle 1: satu tombol reveal di
+    // header, lalu kartu hint muncul berurutan (bukan tombol per-kartu).
+    const [riddle2HintsRevealed, setRiddle2HintsRevealed] = useState(0);
     const [error, setError] = useState("");
     const [attempts, setAttempts] = useState(0);
-    const [time, setTime] = useState(getTimeRemaining());
-    const [phase, setPhase] = useState("input");
+    const [riddle2Attempts, setRiddle2Attempts] = useState(0);
+    const [time, setTime] = useState(getTimeRemaining);
+    // Lazy read of the persisted gate step: the saved WAIT state is applied before
+    // the first render, never from an effect afterwards.
+    const [gateStep] = useState(readGateStep);
+    const [phase, setPhase] = useState(() => getInitialPhase(gateStep));
     const [checkedCount, setCheckedCount] = useState(0);
-    const [clickStage, setClickStage] = useState(0);
+    const [clickStage, setClickStage] = useState(() =>
+        getInitialClickStage(gateStep)
+    );
     const [clickSwitching, setClickSwitching] = useState(false);
+    const [masterAccess, setMasterAccess] = useState(false);
 
-    const inputRefs = useRef([]);
     const timers = useRef([]);
     const sequenceStarted = useRef(false);
     const lastClickAt = useRef(0);
 
+    // Both riddle layers and the time lock have to be satisfied.
+    const canAccessWebsite = riddle1Solved && riddle2Solved && dateReached;
+    const canProceed = canAccessWebsite || masterAccess;
+
+    const handleWrong = () => {
+        setError(ERROR_MESSAGES[attempts % ERROR_MESSAGES.length]);
+        setAttempts((prev) => prev + 1);
+    };
+
+    const handleTyping = () => {
+        if (error) setError("");
+    };
+
+    const handleRiddle2Wrong = () => {
+        setError(
+            ERROR_MESSAGES[riddle2Attempts % ERROR_MESSAGES.length]
+        );
+        setRiddle2Attempts((prev) => prev + 1);
+    };
+
+    const handleAlternateSolved = () => {
+        setMasterAccess(true);
+    };
+
+    const handleRiddleOneSolved = () => {
+        setError("");
+        writeFlag(RIDDLE_STORAGE_KEYS.riddleOne);
+        setRiddle1Solved(true);
+
+        if (isTargetDateReached()) {
+            setDateReached(true);
+            return;
+        }
+
+        setPhase("riddle1Solved");
+
+        const id = setTimeout(() => {
+            setPhase((prev) =>
+                prev === "riddle1Solved" ? resolvePostRiddleOnePhase() : prev
+            );
+        }, RIDDLE_ONE_SUCCESS_DURATION);
+
+        timers.current.push(id);
+    };
+
+    const handleRiddleTwoSolved = () => {
+        setError("");
+        writeFlag(RIDDLE_STORAGE_KEYS.riddleTwo);
+        setRiddle2Solved(true);
+    };
+
+    const handleRecoverySolved = () => {
+        setError("");
+        writeFlag(RIDDLE_STORAGE_KEYS.riddleOne);
+
+        // Let the ✓ on the recovered code stay visible for a moment first.
+        const solvedTimer = setTimeout(() => {
+            setPhase((prev) => (prev === "recover" ? "recovered" : prev));
+
+            const messageTimer = setTimeout(() => {
+                setRiddle1Solved(true);
+                setPhase((prev) => (prev === "recovered" ? "riddle2" : prev));
+            }, RECOVERY_SUCCESS_DURATION);
+
+            timers.current.push(messageTimer);
+        }, RIDDLE_ONE_SUCCESS_DURATION);
+
+        timers.current.push(solvedTimer);
+    };
+
+    const handleStartRecovery = () => {
+        setError("");
+        setPhase("recover");
+    };
+
+    const riddleOneEntry = usePasskeyEntry({
+        passkeyParts: FIRST_RIDDLE_PARTS,
+        enabled: phase === "riddle1",
+        onTyping: handleTyping,
+        onWrong: handleWrong,
+        onSolved: handleRiddleOneSolved,
+        onAlternateSolved: handleAlternateSolved,
+    });
+
+    const riddleTwoEntry = usePasskeyEntry({
+        passkeyParts: SECOND_RIDDLE_PARTS,
+        enabled: phase === "riddle2",
+        onTyping: handleTyping,
+        onWrong: handleRiddle2Wrong,
+        onSolved: handleRiddleTwoSolved,
+        onAlternateSolved: handleAlternateSolved,
+    });
+
+    const recoveryEntry = usePasskeyEntry({
+        passkeyParts: FIRST_RIDDLE_PARTS,
+        enabled: phase === "recover",
+        onTyping: handleTyping,
+        onWrong: handleWrong,
+        onSolved: handleRecoverySolved,
+        onAlternateSolved: handleAlternateSolved,
+    });
+
+    const canRevealClue =
+        cluesRevealed < RIDDLE_ONE_CLUES.length &&
+        (cluesRevealed === 0 || riddleOneEntry.solvedFlags[cluesRevealed - 1]);
+
+    const revealClue = () => {
+        if (!canRevealClue) return;
+        setCluesRevealed((prev) => prev + 1);
+    };
+
+    // Riddle 2: reveal berurutan lewat tombol header — persis perilaku Riddle 1
+    // (canRevealClue/revealClue); hanya isi & label yang berbeda.
+    const canRevealRiddle2Hint =
+        riddle2HintsRevealed < SECOND_RIDDLE_HINTS.length &&
+        (riddle2HintsRevealed === 0 ||
+            riddleTwoEntry.solvedFlags[riddle2HintsRevealed - 1]);
+
+    const revealRiddle2Hint = () => {
+        if (!canRevealRiddle2Hint) return;
+        setRiddle2HintsRevealed((prev) => prev + 1);
+    };
+
+    const handleStageClick = () => {
+        if (phase !== "clicks") return;
+
+        const now = Date.now();
+
+        if (now - lastClickAt.current < 500) {
+            return;
+        }
+
+        lastClickAt.current = now;
+
+        if (clickStage >= WAIT_TEXTS.length - 1) {
+            setPhase("leaving");
+            // The sequence finished: the next visit starts the existing flow again.
+            writeGateStep("");
+
+            const leaveTimer = setTimeout(() => {
+                onUnlock();
+            }, 700);
+
+            timers.current.push(leaveTimer);
+            return;
+        }
+
+        setClickSwitching(true);
+
+        const swapTimer = setTimeout(() => {
+            setClickStage((prev) => prev + 1);
+            // Keep the click-through progress so a refresh continues there.
+            writeGateStep(`clicks:${clickStage + 1}`);
+
+            const revealTimer = setTimeout(() => {
+                setClickSwitching(false);
+            }, 40);
+
+            timers.current.push(revealTimer);
+        }, 300);
+
+        timers.current.push(swapTimer);
+    };
+
+    // Countdown + time lock, cleaned up on unmount.
     useEffect(() => {
         const timer = setInterval(() => {
             setTime(getTimeRemaining());
+            setDateReached(isTargetDateReached());
         }, 1000);
 
         return () => clearInterval(timer);
@@ -103,18 +440,40 @@ function SecretGate({ onUnlock }) {
         };
     }, []);
 
-    const solvedAll = solved.every(Boolean);
-
-    const canRevealClue =
-        cluesRevealed < SECRET_PARTS.length &&
-        (cluesRevealed === 0 || solved[cluesRevealed - 1]);
-
+    // Midnight transition: riddle 1 disappears and riddle 2 takes over, without a
+    // reload and without breaking whatever the visitor is looking at.
     useEffect(() => {
-        if (!solvedAll || phase !== "input" || sequenceStarted.current) {
-            return;
-        }
+        if (!dateReached || !RIDDLE_ONE_PHASES.includes(phase)) return;
+
+        setPhase(resolveRiddleTwoPhase(riddle1Solved));
+    }, [dateReached, phase, riddle1Solved]);
+
+    // The first time riddle 2 becomes active, a short unexplained notice runs.
+    useEffect(() => {
+        if (phase !== "notice") return undefined;
+
+        writeFlag(RIDDLE_STORAGE_KEYS.notice);
+
+        const id = setTimeout(() => {
+            setPhase((prev) =>
+                prev === "notice" ? resolveRiddleTwoPhase(riddle1Solved) : prev
+            );
+        }, NOTICE_DURATION);
+
+        timers.current.push(id);
+
+        return () => clearTimeout(id);
+    }, [phase, riddle1Solved]);
+
+    // Existing "Access Granted" sequence.
+    useEffect(() => {
+        if (!canProceed || sequenceStarted.current) return;
 
         sequenceStarted.current = true;
+
+        // The sequence already reached WAIT TEXT before this refresh: resume there
+        // and never run the verification a second time.
+        if (phase === "waiting" || phase === "clicks") return;
 
         const schedule = (callback, delay) => {
             const id = setTimeout(callback, delay);
@@ -127,96 +486,136 @@ function SecretGate({ onUnlock }) {
         schedule(() => setCheckedCount(3), 2000);
         schedule(() => setPhase("granted"), 2700);
         schedule(() => setPhase("blackout"), 3800);
-        schedule(() => setPhase("waiting"), 4400);
-        schedule(() => setPhase("clicks"), 8900);
-    }, [solvedAll, phase, onUnlock]);
+        schedule(() => {
+            setPhase("waiting");
+            writeGateStep("waiting");
+        }, 4400);
+    }, [canProceed, phase]);
 
-    const handlePartChange = (index, value) => {
-        const messageIndex = attempts % ERROR_MESSAGES.length;
-        if (solved[index] || solvedAll) return;
+    // WAIT TEXT pauses before the click-through starts. Kept outside the sequence
+    // effect so a WAIT step restored after a refresh still moves on as before.
+    useEffect(() => {
+        if (phase !== "waiting") return undefined;
 
-        const digits = value.replace(/\D/g, "").slice(0, 2);
+        const id = setTimeout(() => {
+            setPhase("clicks");
+            writeGateStep("clicks:0");
+        }, WAIT_TEXT_DURATION);
 
-        if (error) setError("");
+        timers.current.push(id);
 
-        if (digits.length < 2) {
-            setParts((prev) => {
-                const next = [...prev];
-                next[index] = digits;
-                return next;
-            });
-            return;
-        }
+        return () => clearTimeout(id);
+    }, [phase]);
 
-        if (digits === SECRET_PARTS[index]) {
-            setParts((prev) => {
-                const next = [...prev];
-                next[index] = digits;
-                return next;
-            });
+    const sequenceParts = masterAccess ? MASTER_PARTS : FIRST_RIDDLE_PARTS;
 
-            setSolved((prev) => {
-                const next = [...prev];
-                next[index] = true;
-                return next;
-            });
+    const footer = (
+        <div className="secret-footer">
+            <span>PRIVATE</span>
+            <span>•</span>
+            <span>2026</span>
+        </div>
+    );
 
-            const nextInput = inputRefs.current[index + 1];
-            if (nextInput) nextInput.focus();
-            return;
-        }
+    const countdownBlock = (
+        <div className="countdown">
+            <p className="countdown-label">ACCESS WINDOW</p>
 
-        setParts((prev) => {
-            const next = [...prev];
-            next[index] = "";
-            return next;
-        });
+            <div className="countdown-grid">
+                <div>
+                    <strong>{String(time.days).padStart(2, "0")}</strong>
+                    <span>DAYS</span>
+                </div>
 
-        setError(ERROR_MESSAGES[messageIndex]);
-        setAttempts((prev) => prev + 1);
-    };
+                <i>:</i>
 
-    const revealClue = () => {
-        if (!canRevealClue) return;
-        setCluesRevealed((prev) => prev + 1);
-    };
+                <div>
+                    <strong>{String(time.hours).padStart(2, "0")}</strong>
+                    <span>HOURS</span>
+                </div>
 
-    const handleStageClick = () => {
-        if (phase !== "clicks") return;
+                <i>:</i>
 
-        const now = Date.now();
+                <div>
+                    <strong>{String(time.minutes).padStart(2, "0")}</strong>
+                    <span>MINUTES</span>
+                </div>
 
-        if (now - lastClickAt.current < 500) {
-            return;
-        }
+                <i>:</i>
 
-        lastClickAt.current = now;
+                <div>
+                    <strong>{String(time.seconds).padStart(2, "0")}</strong>
+                    <span>SECONDS</span>
+                </div>
+            </div>
 
-        if (clickStage >= WAIT_TEXTS.length - 1) {
-            setPhase("leaving");
+            {time.expired && <p className="access-open">ACCESS WINDOW OPEN</p>}
+        </div>
+    );
 
-            const leaveTimer = setTimeout(() => {
-                onUnlock();
-            }, 700);
+    // Only what the visitor typed is rendered. Passkeys stay in the configuration.
+    const renderEntry = (entry, passkeyParts, labelPrefix) => (
+        <div className="secret-parts">
+            {passkeyParts.map((_, index) => (
+                <React.Fragment key={index}>
+                    {index > 0 && <span className="secret-separator">|</span>}
 
-            timers.current.push(leaveTimer);
-            return;
-        }
+                    <div
+                        className={`secret-part ${entry.solvedFlags[index] ? "is-solved" : ""
+                            }`}
+                    >
+                        <input
+                            ref={(element) => {
+                                entry.inputRefs.current[index] = element;
+                            }}
+                            type="text"
+                            inputMode="numeric"
+                            value={entry.values[index]}
+                            onChange={(event) =>
+                                entry.handleChange(index, event.target.value)
+                            }
+                            placeholder="··"
+                            maxLength={2}
+                            disabled={
+                                masterAccess ||
+                                entry.solvedFlags[index] ||
+                                entry.solvedAll
+                            }
+                            autoComplete="off"
+                            aria-label={`${labelPrefix} ${index + 1}`}
+                        />
 
-        setClickSwitching(true);
+                        <span className="secret-part-check">✓</span>
+                    </div>
+                </React.Fragment>
+            ))}
+        </div>
+    );
 
-        const swapTimer = setTimeout(() => {
-            setClickStage((prev) => prev + 1);
+    const renderClues = (clues) => (
+        <div className="clues">
+            <div className="clue-list">
+                {clues.map((clue, index) => (
+                    <div className="clue-card" key={index}>
+                        <span className="clue-card-label">
+                            {CLUE_LABELS[index]}
+                        </span>
+                        <p className="clue-card-text">{clue}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 
-            const revealTimer = setTimeout(() => {
-                setClickSwitching(false);
-            }, 40);
+    const renderGateScreen = (content) => (
+        <div className="secret-gate">
+            <div className="secret-grid" />
+            <div className="secret-glow secret-glow-one" />
+            <div className="secret-glow secret-glow-two" />
 
-            timers.current.push(revealTimer);
-        }, 300);
-
-        timers.current.push(swapTimer);
-    };
+            <div className="secret-content">{content}</div>
+        </div>
+    );
 
     if (phase === "blackout") {
         return <div className="secret-gate is-black" />;
@@ -258,7 +657,29 @@ function SecretGate({ onUnlock }) {
         );
     }
 
-    if (phase === "verifying" || phase === "granted") {
+    // Riddle 1 recovered on the second layer.
+    if (phase === "recovered") {
+        return (
+            <div className="secret-gate is-black">
+                <div className="gate-wait">
+                    <p className="gate-wait-text">{RECOVERY_SUCCESS_TEXT}</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Riddle 2 became the active riddle for the first time.
+    if (phase === "notice") {
+        return (
+            <div className="secret-gate is-black">
+                <div className="gate-wait">
+                    <p className="gate-wait-text">{NOTICE_TEXT}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (phase === "verifying" || phase === "granted" || canProceed) {
         return (
             <div
                 className={`secret-gate ${phase === "granted" ? "is-granted" : ""
@@ -268,20 +689,22 @@ function SecretGate({ onUnlock }) {
 
                 <div className="gate-sequence">
                     <p className="gate-sequence-status">
-                        {phase === "verifying"
-                            ? "VERIFYING..."
-                            : "ACCESS GRANTED"}
+                        {phase === "granted"
+                            ? "ACCESS GRANTED"
+                            : "VERIFYING..."}
                     </p>
 
                     <div className="gate-sequence-list">
-                        {SECRET_PARTS.map((value, index) => (
+                        {sequenceParts.map((value, index) => (
                             <div
-                                key={value}
-                                className={`gate-sequence-item ${checkedCount > index ? "is-checked" : ""
+                                key={index}
+                                className={`gate-sequence-item ${checkedCount > index
+                                    ? "is-checked"
+                                    : ""
                                     }`}
                             >
                                 <span className="gate-sequence-value">
-                                    {value}
+                                    {"•".repeat(value.length)}
                                 </span>
                                 <span className="gate-sequence-check">✓</span>
                             </div>
@@ -292,153 +715,210 @@ function SecretGate({ onUnlock }) {
         );
     }
 
-    return (
-        <div className="secret-gate">
-            <div className="secret-grid" />
-            <div className="secret-glow secret-glow-one" />
-            <div className="secret-glow secret-glow-two" />
-
-            <div className="secret-content">
-                <div className="secret-symbol">
-                    <span />
-                </div>
-
-                <p className="secret-label">RESTRICTED ACCESS</p>
+    // Time lock layer: riddle 1 is solved, but 24.10.2026 has not arrived yet.
+    if (phase === "locked") {
+        return renderGateScreen(
+            <React.Fragment>
+                <p className="secret-label">
+                    {SECRET_GATE_CONFIG.lockedMessage.title}
+                </p>
 
                 <h1>SOMETHING IS WAITING</h1>
 
                 <p className="secret-description">
-                    Some things are better discovered slowly.
+                    {SECRET_GATE_CONFIG.lockedMessage.message}
                 </p>
 
-                <div className="secret-parts">
-                    {SECRET_PARTS.map((_, index) => (
-                        <React.Fragment key={index}>
-                            {index > 0 && (
-                                <span className="secret-separator">|</span>
-                            )}
+                <p className="secret-note">
+                    {SECRET_GATE_CONFIG.lockedMessage.subtitle}
+                </p>
 
-                            <div
-                                className={`secret-part ${solved[index] ? "is-solved" : ""
-                                    }`}
-                            >
-                                <input
-                                    ref={(element) => {
-                                        inputRefs.current[index] = element;
-                                    }}
-                                    type="text"
-                                    inputMode="numeric"
-                                    value={parts[index]}
-                                    onChange={(event) =>
-                                        handlePartChange(
-                                            index,
-                                            event.target.value
-                                        )
-                                    }
-                                    placeholder="··"
-                                    maxLength={2}
-                                    disabled={solved[index] || solvedAll}
-                                    autoComplete="off"
-                                    aria-label={`Kode bagian ${index + 1}`}
-                                />
+                <p className="secret-date">{formatGateDate()}</p>
 
-                                <span className="secret-part-check">✓</span>
-                            </div>
-                        </React.Fragment>
-                    ))}
+                {countdownBlock}
+                {footer}
+            </React.Fragment>
+        );
+    }
+
+    // Riddle 2 is active, but riddle 1 was never solved.
+    if (phase === "riddle2Locked") {
+        return renderGateScreen(
+            <React.Fragment>
+                <p className="secret-label">RIDDLE 02</p>
+
+                <h1>SOMETHING IS WAITING</h1>
+
+                <p className="secret-description">{RIDDLE_TWO_LOCKED_TEXT}</p>
+
+                <p className="locked-badge">🔒 SECOND CLUE LOCKED</p>
+
+                <p className="secret-note">{RECOVERY_HINT}</p>
+
+                <button
+                    type="button"
+                    className="gate-click-button"
+                    onClick={handleStartRecovery}
+                >
+                    I THINK I REMEMBER
+                </button>
+
+                {footer}
+            </React.Fragment>
+        );
+    }
+
+    // Recovering riddle 1. Its clues are shown again, never its passkey.
+    if (phase === "recover") {
+        return renderGateScreen(
+            <React.Fragment>
+                <p className="secret-label">RIDDLE 01</p>
+
+                <h1>SOMETHING IS WAITING</h1>
+
+                <p className="secret-description">{RECOVERY_HINT}</p>
+
+                {renderEntry(recoveryEntry, FIRST_RIDDLE_PARTS, "Kode bagian")}
+
+                <div className="secret-error">{error}</div>
+
+                {renderClues(RIDDLE_ONE_CLUES)}
+                {footer}
+            </React.Fragment>
+        );
+    }
+
+    // Riddle 2, unlocked because riddle 1 was solved.
+    // Struktur DOM-nya SAMA PERSIS dengan Riddle 1 (lihat return terakhir):
+    // symbol -> label -> h1 -> description -> parts -> error -> clues -> countdown -> footer.
+    // Riddle 1 = baseline, Riddle 2 hanya beda label + content/passkey/hint.
+    // Blok hint juga identik: header "HINTS x/3" + tombol REVEAL HINT di header,
+    // kartu hint reveal berurutan (bukan tombol per-kartu).
+    // renderEntry dipakai ulang => 3 input group 2 digit (13|23|05) dengan class
+    // .secret-parts/.secret-part yang sama, jadi ukurannya otomatis identik.
+    // Validasi tetap satu passkey: values.join("") === "132305".
+    if (phase === "riddle2") {
+        return renderGateScreen(
+            <React.Fragment>
+                <div className="secret-symbol">
+                    <span />
                 </div>
+
+                <p className="secret-label">RIDDLE 02</p>
+
+                <h1>EITSSSS, RIDDLE LAGI KITAAAAA</h1>
+
+                <p className="secret-description">
+                    biar lebih misterius aja sihhhh, wkwkwkk.
+                </p>
+
+                <p className="secret-description">
+                    semangat sayang, loppp u sekebonn dahh, wkwkwwkk
+                </p>
+
+
+                {renderEntry(riddleTwoEntry, SECOND_RIDDLE_PARTS, "Kode bagian")}
 
                 <div className="secret-error">{error}</div>
 
                 <div className="clues">
                     <div className="clues-head">
                         <span className="clues-count">
-                            CLUES {cluesRevealed}/3
+                            HINTS {riddle2HintsRevealed}/
+                            {SECOND_RIDDLE_HINTS.length}
                         </span>
 
-                        {canRevealClue && (
+                        {canRevealRiddle2Hint && (
                             <button
                                 type="button"
                                 className="clue-reveal-button"
-                                onClick={revealClue}
+                                onClick={revealRiddle2Hint}
                             >
-                                REVEAL {CLUE_LABELS[cluesRevealed]}
+                                REVEAL{" "}
+                                {RIDDLE_TWO_HINT_LABELS[riddle2HintsRevealed]}
                             </button>
                         )}
                     </div>
 
-                    {cluesRevealed > 0 && (
+                    {riddle2HintsRevealed > 0 && (
                         <div className="clue-list">
-                            {CLUES.slice(0, cluesRevealed).map(
-                                (clue, index) => (
-                                    <div className="clue-card" key={index}>
-                                        <span className="clue-card-label">
-                                            {CLUE_LABELS[index]}
-                                        </span>
-                                        <p className="clue-card-text">
-                                            {clue}
-                                        </p>
-                                    </div>
-                                )
-                            )}
+                            {SECOND_RIDDLE_HINTS.slice(
+                                0,
+                                riddle2HintsRevealed
+                            ).map((hint, index) => (
+                                <div className="clue-card" key={index}>
+                                    <span className="clue-card-label">
+                                        {RIDDLE_TWO_HINT_LABELS[index]}
+                                    </span>
+                                    <p className="clue-card-text">{hint}</p>
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>
 
-                <div className="countdown">
-                    <p className="countdown-label">ACCESS WINDOW</p>
+                {countdownBlock}
+                {footer}
+            </React.Fragment>
+        );
+    }
 
-                    <div className="countdown-grid">
-                        <div>
-                            <strong>
-                                {String(time.days).padStart(2, "0")}
-                            </strong>
-                            <span>DAYS</span>
-                        </div>
-
-                        <i>:</i>
-
-                        <div>
-                            <strong>
-                                {String(time.hours).padStart(2, "0")}
-                            </strong>
-                            <span>HOURS</span>
-                        </div>
-
-                        <i>:</i>
-
-                        <div>
-                            <strong>
-                                {String(time.minutes).padStart(2, "0")}
-                            </strong>
-                            <span>MINUTES</span>
-                        </div>
-
-                        <i>:</i>
-
-                        <div>
-                            <strong>
-                                {String(time.seconds).padStart(2, "0")}
-                            </strong>
-                            <span>SECONDS</span>
-                        </div>
-                    </div>
-
-                    {time.expired && (
-                        <p className="access-open">ACCESS WINDOW OPEN</p>
-                    )}
-                </div>
-
-                <div className="secret-footer">
-                    <span>PRIVATE</span>
-                    <span>•</span>
-                    <span>2026</span>
-                </div>
+    // Riddle 1 is the active riddle before the target date.
+    return renderGateScreen(
+        <React.Fragment>
+            <div className="secret-symbol">
+                <span />
             </div>
-        </div>
+
+            <p className="secret-label">RIDDLE 01</p>
+
+            <h1>SOMETHING IS WAITING</h1>
+
+            <p className="secret-description">
+                Some things are better discovered slowly.
+            </p>
+
+            {renderEntry(riddleOneEntry, FIRST_RIDDLE_PARTS, "Kode bagian")}
+
+            <div className="secret-error">{error}</div>
+
+            <div className="clues">
+                <div className="clues-head">
+                    <span className="clues-count">
+                        CLUES {cluesRevealed}/{RIDDLE_ONE_CLUES.length}
+                    </span>
+
+                    {canRevealClue && (
+                        <button
+                            type="button"
+                            className="clue-reveal-button"
+                            onClick={revealClue}
+                        >
+                            REVEAL {CLUE_LABELS[cluesRevealed]}
+                        </button>
+                    )}
+                </div>
+
+                {cluesRevealed > 0 && (
+                    <div className="clue-list">
+                        {RIDDLE_ONE_CLUES.slice(0, cluesRevealed).map(
+                            (clue, index) => (
+                                <div className="clue-card" key={index}>
+                                    <span className="clue-card-label">
+                                        {CLUE_LABELS[index]}
+                                    </span>
+                                    <p className="clue-card-text">{clue}</p>
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {countdownBlock}
+            {footer}
+        </React.Fragment>
     );
 }
 
 export default SecretGate;
-
-

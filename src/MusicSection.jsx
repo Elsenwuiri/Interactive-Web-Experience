@@ -5,28 +5,28 @@ const tracks = [
     {
         id: 1,
         title: "Another Birthday Song",
-        file: "/music/song-1.mp3",
+        file: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Musics/song-1.mp3",
         caption:
             "May this song accompany you throughout this new chapter of your life, and may this year be filled with many beautiful moments, joy, and blessings. 🤍"
     },
     {
         id: 2,
         title: "Song 2",
-        file: "/music/song-2.mp3",
+        file: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Musics/song-2.mp3",
         caption:
             "I'm giving this song to you, hoping that whenever you listen to it, you'll always be reminded of God's goodness and feel strengthened through every step of your journey."
     },
     {
         id: 3,
         title: "Song 3",
-        file: "/music/song-3.mp3",
+        file: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Musics/song-3.mp3",
         caption:
             "Honestly, this was the first song I played when I started getting closer to you… hehehe. I guess the song was already telling the story before I even realized it. :)"
     },
     {
         id: 4,
         title: "Song 4",
-        file: "/music/song-4.mp3",
+        file: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Musics/song-4.mp3",
         caption:
             "The title says it all… because somehow, “Perfect” reminds me of you. Wkwkwk, \n a little cheesy, but I mean it. 🤍"
     },
