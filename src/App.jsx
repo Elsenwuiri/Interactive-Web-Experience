@@ -33,62 +33,62 @@ const readStoredAccess = () => {
 
 const photos = [
     {
-        src: "/images/photo-01.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-01.webp",
         caption: "lagi mejem mbak:)",
         rotation: "2deg",
     },
     {
-        src: "/images/photo-02.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-02.webp",
         caption: "takut ke tempat serangga, wkwkwkwk",
         rotation: "-1deg",
     },
     {
-        src: "/images/photo-03.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-03.webp",
         caption: "senyum bahagia bangettt",
         rotation: "3deg",
     },
     {
-        src: "/images/photo-04.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-04.webp",
         caption: "dokter kelelahan menangani pasien gess",
         rotation: "-3deg",
     },
     {
-        src: "/images/photo-05.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-05.webp",
         caption: "makasihhh fotonya, WKWKWKWK",
         rotation: "1deg",
     },
     {
-        src: "/images/photo-06.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-06.webp",
         caption: "'dalam nama Yesus, dalam nama Yesus'",
         rotation: "-2deg",
     },
     {
-        src: "/images/photo-07.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-07.webp",
         caption: "OOOOOOOOoooo",
         rotation: "2deg",
     },
     {
-        src: "/images/photo-08.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-08.webp",
         caption: "😋",
         rotation: "-1deg",
     },
     {
-        src: "/images/photo-09.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-09.webp",
         caption: "hmmmmzzz_-",
         rotation: "3deg",
     },
     {
-        src: "/images/photo-10.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-10.webp",
         caption: "aduh belum siap, wkwkwkwk",
         rotation: "-2deg",
     },
     {
-        src: "/images/photo-11.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-11.webp",
         caption: "noleh dikit, etttt",
         rotation: "-2deg",
     },
     {
-        src: "/images/photo-12.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-12.webp",
         caption: "matcha apa cheese yaaa, hmmmm",
         rotation: "-2deg",
     },
@@ -96,63 +96,63 @@ const photos = [
 
 const herPhotos = [
     {
-        src: "/images/her/her-02.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-02.webp",
         caption: "就像52一样, 意思是我爱温, 呵呵",
         rotation: "2deg",
     },
     {
-        src: "/images/her/her-03.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-03.webp",
         caption: "这张照片拍起来有点费劲。",
         rotation: "-1deg",
     },
     {
-        src: "/images/her/her-07.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-07.webp",
         caption: "不得不说，这张真的很酷",
         rotation: "-2deg",
     },
     {
-        src: "/images/her/her-06.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-06.webp",
         caption: "我要吃你啊, aaaaaaa",
         rotation: "1deg",
     },
     {
-        src: "/images/her/her-05.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-05.webp",
         caption: "我们再去徒步吧～～ ",
         rotation: "-3deg",
     },
     {
-        src: "/images/her/her-04.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-04.webp",
         caption: "风景和你一样美～～",
         rotation: "3deg",
     },
     {
-        src: "/images/her/her-12.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-12.webp",
         caption: "我有一位超酷的医生啦:)",
         rotation: "-2deg",
     },
     {
-        src: "/images/her/her-11.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-11.webp",
         caption: "我们的第一张合照 🤍",
         rotation: "-2deg",
     },
     {
-        src: "/images/her/her-09.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-09.webp",
         caption: "我们的 photobooth 还要再多一点！",
         rotation: "-2deg",
     },
     {
         type: "video",
-        src: "/videos/photo-15.mp4",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Videos/photo-15.mp4",
         caption: "太绝了！",
         rotation: "1deg",
     },
     {
-        src: "/images/her/her-10.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-10.webp",
         caption: "没有别的话了，完美",
         rotation: "-2deg",
     },
     {
-        src: "/images/her/her-14.webp",
+        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-14.webp",
         caption: "可爱。",
         rotation: "2deg",
     },
