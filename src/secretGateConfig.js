@@ -1,7 +1,7 @@
 export const SECRET_GATE_CONFIG = {
     firstPasskey: import.meta.env.VITE_FIRST_PASSKEY,
     secondPasskey: import.meta.env.VITE_SECOND_PASSKEY,
-    targetDate: "2025-10-24T00:00:00",
+    targetDate: "2026-10-24T00:00:00",
     lockedMessage: {
         title: "ACCESS LOCKED",
         message: "EITSSSSS udahh selesai sihhh riddlenya tapi belom waktunyaa, wkwkwkwk",
