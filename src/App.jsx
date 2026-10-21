@@ -1004,13 +1004,13 @@ function App() {
                                         controls
                                         playsInline
                                         preload="metadata"
-                                        poster="/images/background-vid.webp"
+                                        poster="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/PLAY%20ME.webp"
                                         onPlay={handleVideoPlay}
                                         onPause={handleVideoPause}
                                         onEnded={handleVideoEnded}
                                     >
                                         <source
-                                            src="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Videos/photo-14.mp4"
+                                            src="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Videos/video-ucapan.mp4"
                                             type="video/mp4"
                                         />
                                         Browser kamu tidak mendukung video.
@@ -1190,7 +1190,7 @@ function App() {
                     <footer className="footer">
                         <p>made with love</p>
                         <span>♡</span>
-                        <p>2026</p>
+                        <p>by Elsen Wuiri</p>
                     </footer>
                 </main>
             )}
