@@ -1,3 +1,5 @@
+export const ENABLE_SECRET_GATE = false;
+
 export const SECRET_GATE_CONFIG = {
     firstPasskey: import.meta.env.VITE_FIRST_PASSKEY,
     secondPasskey: import.meta.env.VITE_SECOND_PASSKEY,

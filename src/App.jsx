@@ -3,6 +3,7 @@ import confetti from "canvas-confetti";
 import SecretGate from "./SecretGate";
 import "./App.css";
 import { supabase } from "./lib/supabase";
+import { ENABLE_SECRET_GATE } from "./secretGateConfig";
 import { Analytics } from "@vercel/analytics/react";
 import MusicSection from "./MusicSection";
 
@@ -210,7 +211,10 @@ const smoothScrollTo = (targetY, duration = 1100) => {
 };
 
 function App() {
-    const [siteUnlocked, setSiteUnlocked] = useState(readStoredAccess);
+    const [siteUnlocked, setSiteUnlocked] = useState(() => {
+        if (!ENABLE_SECRET_GATE) return true;
+        return readStoredAccess();
+    });
     const [opened, setOpened] = useState(false);
     const [finalReveal, setFinalReveal] = useState(false);
     const [musicEnabled, setMusicEnabled] = useState(false);
