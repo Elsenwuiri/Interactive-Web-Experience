@@ -17,7 +17,10 @@ export const RIDDLE_STORAGE_KEYS = {
     notice: "riddleNoticeSeen",
 };
 
-export const splitPasskey = (passkey) => String(passkey).match(/.{1,2}/g) || [];
+export const splitPasskey = (passkey) => {
+    if (passkey === null || passkey === undefined) return [];
+    return String(passkey).match(/.{1,2}/g) || [];
+};
 
 export const FIRST_RIDDLE_PARTS = splitPasskey(SECRET_GATE_CONFIG.firstPasskey);
 export const SECOND_RIDDLE_PARTS = splitPasskey(SECRET_GATE_CONFIG.secondPasskey);
