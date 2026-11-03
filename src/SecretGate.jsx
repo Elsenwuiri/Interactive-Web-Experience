@@ -20,52 +20,37 @@ const MASTER_PARTS = MASTERKEY.match(/.{1,2}/g) || [];
 // Riddle 2's hint block mirrors Riddle 1 exactly: one reveal button in the
 // header, then hint cards appear in sequence (not one button per card).
 const SECOND_RIDDLE_HINTS = [
-    "Dua angka pertama, saat ini ditampilkan seseorang sebagai pengingat di sebuah \"platfrom\" sebagai penguat. tapi hanya 2 angka terakhir saja",
-    "Dua angka berikutnya merupakan angka yang pertama kali terlihat ketika seseorang sedang stalking aku",
-    "Dua angka terakhir menandai bulan ketika seseorang yang berjiwa seperti si kembar pertama kali hadir di dunia.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consequat enim gravida sagittis venenatis. Nullam eu facilisis tortor, at tempus enim. Pellentesque tempor risus ut quam facilisis fringilla vitae ut ligula.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consequat enim gravida sagittis venenatis. Nullam eu facilisis tortor, at tempus enim. Pellentesque tempor risus ut quam facilisis fringilla vitae ut ligula.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consequat enim gravida sagittis venenatis. Nullam eu facilisis tortor, at tempus enim. Pellentesque tempor risus ut quam facilisis fringilla vitae ut ligula.",
 ];
 const RIDDLE_TWO_HINT_LABELS = ["HINT 01", "HINT 02", "HINT 03"];
 
 const RIDDLE_ONE_CLUES = [
-    "Dua angka pertama adalah sesuatu yang hampir selalu hadir ketika seseorang membagikan cerita singkatnya.",
-    "Dua angka berikutnya menggambarkan sejauh mana perjalanan seseorang telah berjalan.",
-    "Dua angka terakhir mungkin tidak berarti banyak bagi orang lain.\n\nTapi mungkin berbeda bagi kita.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consequat enim gravida sagittis venenatis. Nullam eu facilisis tortor, at tempus enim. Pellentesque tempor risus ut quam facilisis fringilla vitae ut ligula.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consequat enim gravida sagittis venenatis. Nullam eu facilisis tortor, at tempus enim. Pellentesque tempor risus ut quam facilisis fringilla vitae ut ligula.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consequat enim gravida sagittis venenatis. Nullam eu facilisis tortor, at tempus enim. Pellentesque tempor risus ut quam facilisis fringilla vitae ut ligula.",
 ];
 
 const CLUE_LABELS = ["CLUE I", "CLUE II", "CLUE III"];
 
 const ERROR_MESSAGES = [
-    "aduhhhh masih salahhh nihhh",
-    "bukannn",
-    "dikittt lagiii.",
-    "terlalu di-ini-in.",
-    "Semangatt sayangg, wkwkwkwk",
-    "ayo ditebak lagiiiii",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 ];
 
 const WAIT_TEXTS = [
-    "nungguin yaaaaa",
-    "bentar...",
-    "dikit lagi...",
-    "yang benerrrrr nihhhhh",
-    "serius udah mau masuk?",
-    "satu lagi dehhh",
-    "janjii 1 lagii",
-    "ehh satu lagii dehhh",
-    "benerrr ini terakhirr",
-    "wkwkwkwkwk",
-    "seberapa seriuss mau buka webnya?",
-    "yakin?",
-    "benerrr?",
-    "gila seserius itu, wkwkwwk",
-    "yaudahh dehh terakhirr",
-    "wkwkwkw serius habis ini",
+    "wait text 1",
+    "wait text 2",
+    "wait text 3",
+    // tambahkan sesuka hatimu
 ];
 
 const NOTICE_TEXT = "eh... ada yang berubah.";
 const RECOVERY_HINT =
     "Sebelum mencari jawaban yang baru,\ncoba ingat kembali jawaban yang pertama.";
-const RECOVERY_SUCCESS_TEXT = "Nah... akhirnya ketemu juga. Semangat riddle ke-2nya sayangggg, wkwkwwkwk";
+const RECOVERY_SUCCESS_TEXT = "Nah... akhirnya ketemu juga. Semangat riddle ke-2nya";
 const RIDDLE_TWO_LOCKED_TEXT = "Sepertinya ada sesuatu yang belum kamu selesaikan.";
 
 const NOTICE_DURATION = 2400;

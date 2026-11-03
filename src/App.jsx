@@ -34,128 +34,127 @@ const readStoredAccess = () => {
 
 const photos = [
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-01.webp",
-        caption: "lagi mejem mbak:)",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 1",
         rotation: "2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-02.webp",
-        caption: "takut ke tempat serangga, wkwkwkwk",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 2",
         rotation: "-1deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-03.webp",
-        caption: "senyum bahagia bangettt",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 3",
         rotation: "3deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-04.webp",
-        caption: "dokter kelelahan menangani pasien gess",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 4",
         rotation: "-3deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-05.webp",
-        caption: "makasihhh fotonya, WKWKWKWK",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 5",
         rotation: "1deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-06.webp",
-        caption: "'dalam nama Yesus, dalam nama Yesus'",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 6",
         rotation: "-2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-07.webp",
-        caption: "OOOOOOOOoooo",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 7",
         rotation: "2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-08.webp",
-        caption: "😋",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 8",
         rotation: "-1deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-09.webp",
-        caption: "hmmmmzzz_-",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 9",
         rotation: "3deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-10.webp",
-        caption: "aduh belum siap, wkwkwkwk",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 10",
         rotation: "-2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-11.webp",
-        caption: "noleh dikit, etttt",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 11",
         rotation: "-2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-12.webp",
-        caption: "matcha apa cheese yaaa, hmmmm",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 12",
         rotation: "-2deg",
     },
 ];
 
 const herPhotos = [
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-02.webp",
-        caption: "就像52一样, 意思是我爱温, 呵呵",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 1",
         rotation: "2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-03.webp",
-        caption: "这张照片拍起来有点费劲。",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 2",
         rotation: "-1deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-07.webp",
-        caption: "不得不说，这张真的很酷",
-        rotation: "-2deg",
-    },
-    {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-06.webp",
-        caption: "我要吃你啊, aaaaaaa",
-        rotation: "1deg",
-    },
-    {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-05.webp",
-        caption: "我们再去徒步吧～～ ",
-        rotation: "-3deg",
-    },
-    {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-04.webp",
-        caption: "风景和你一样美～～",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 3",
         rotation: "3deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-12.webp",
-        caption: "我有一位超酷的医生啦:)",
-        rotation: "-2deg",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 4",
+        rotation: "-3deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-11.webp",
-        caption: "我们的第一张合照 🤍",
-        rotation: "-2deg",
-    },
-    {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-09.webp",
-        caption: "我们的 photobooth 还要再多一点！",
-        rotation: "-2deg",
-    },
-    {
-        type: "video",
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Videos/photo-15.mp4",
-        caption: "太绝了！",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 5",
         rotation: "1deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-10.webp",
-        caption: "没有别的话了，完美",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 6",
         rotation: "-2deg",
     },
     {
-        src: "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/her/her-14.webp",
-        caption: "可爱。",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 7",
         rotation: "2deg",
+    },
+    {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 8",
+        rotation: "-1deg",
+    },
+    {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 9",
+        rotation: "3deg",
+    },
+    {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 10",
+        rotation: "-2deg",
+    },
+    {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 11",
+        rotation: "-2deg",
+    },
+    {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10",
+        caption: "Preview 12",
+        rotation: "-2deg",
     },
 
 ];
@@ -578,7 +577,7 @@ function App() {
 
         if (audio) {
             try {
-                audio.src = "https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Musics/birthday-song.mp3";
+                audio.src = "[your audio link]";
                 audio.currentTime = 0;
                 audio.volume = 0;
                 audio.load();
@@ -601,7 +600,7 @@ function App() {
         setReplyStatus("");
 
         if (!supabase) {
-            setReplyStatus("Supabase URL/Key belum dikonfigurasi di .env ♡, screenshoot kirim ke aku yaakkk");
+            setReplyStatus("Supabase URL/Key not configure yet in .env");
             setIsSending(false);
             return;
         }
@@ -616,7 +615,7 @@ function App() {
         } else {
             setReply("");
             setReplyStatus(
-                "MAKASIHHH UDHH NULISSS, WKWKWKWK LOVE U SO MUCH!! ♡"
+                "Thank you"
             );
         }
 
@@ -688,7 +687,7 @@ function App() {
                     {/* Opening Section */}
                     <section className="opening section">
                         <div className="opening-background">
-                            <img src="/images/background.webp" alt="" />
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10" alt="" />
                         </div>
 
                         <div className="opening-overlay" />
@@ -700,20 +699,20 @@ function App() {
                         <div className="tape tape-top" />
 
                         <div className="opening-card paper-card">
-                            <div className="small-label">24 OCTOBER 2026</div>
+                            <div className="small-label">DD MM YYYY</div>
 
                             <div className="recipient">
-                                给<span>温云花❤️</span>
+                                To<span>(your name)</span>
                             </div>
 
                             <div className="envelope-line" />
 
-                            <h1>给你的一封信</h1>
+                            <h1>Lorem ipsum dolor sit amet</h1>
 
                             <p className="opening-description">
-                                这是一份小小的礼物，
+                                Lorem ipsum dolor sit amet,
                                 <br />
-                                也是我想在今天送给你的心意。
+                                consectetur adipiscing elit.
                             </p>
 
                             <button className="open-button" onClick={openGift}>
@@ -721,7 +720,7 @@ function App() {
                             </button>
 
                             <div className="stamp">
-                                <span>24</span>
+                                <span>XX</span>
                                 <small>YEARS</small>
                             </div>
                         </div>
@@ -754,34 +753,31 @@ function App() {
 
                             <div className="birthday-grid">
                                 <div className="birthday-copy">
-                                    <p className="chinese-name">温云花</p>
+                                    <p className="chinese-name">(name)</p>
 
                                     <p className="birthday-age">
-                                        <strong>24</strong>
+                                        <strong>XX</strong>
                                         <span>years old</span>
                                     </p>
 
                                     <div className="handwritten">
-                                        今天，
+                                        Today，
                                         <br />
-                                        是属于你的日子。
+                                        is the best day for you.
                                     </div>
 
                                     <p className="body-copy">
-                                        希望你在新的一岁里，
-                                        <br />
-                                        你可以做任何自己喜欢的事情，
-                                        <br />
-                                        去任何你想去的地方，
-                                        <br />
-                                        以后也能遇见更多对你好的人。
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />
+                                        Curabitur vitae massa sed turpis pellentesque consectetur. <br />
+                                        Sed tempor arcu in efficitur sagittis. Pellentesque ut sapien massa. <br />
+                                        Curabitur laoreet neque nisl, non volutpat ipsum rhoncus ut.。
                                     </p>
                                 </div>
 
                                 <div className="hero-photo-frame">
                                     <div className="photo-tape" />
                                     <div className="hero-photo">
-                                        <img src="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/photo-wen.webp" alt="温云花" />
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10" alt="name" />
                                     </div>
                                     <p className="photo-note">the birthday girl ♡</p>
                                 </div>
@@ -885,16 +881,13 @@ function App() {
                                 <span>03</span>
                                 <div>
                                     <p className="eyebrow">A FEW LITTLE MOMENTS</p>
-                                    <h2>Your "Best" Photos :) 😗</h2>
+                                    <h2>Her Photos</h2>
                                 </div>
                             </div>
 
                             <p className="section-intro">
-                                这些照片可能很普通，
-                                <br />
-                                但因为有你，就变得特别了。
-                                <br />
-                                哈哈哈哈，不许生气哦，嘿嘿。
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />
+                                Curabitur laoreet neque nisl, non volutpat ipsum rhoncus ut.
                             </p>
 
                             <div className="photo-grid">
@@ -932,19 +925,15 @@ function App() {
                                 <span>04</span>
                                 <div>
                                     <p className="eyebrow">PORTRAITS OF US</p>
-                                    <h2>Our Gallery 🥰</h2>
+                                    <h2>Your Gallery</h2>
                                 </div>
                             </div>
 
                             <div className="her-intro">
                                 <p className="her-intro-text">
-                                    这些照片看起来都很珍贵，
-                                    <br />
-                                    希望以后我们可以有更多这样的合照🌚
-                                    <br />
-                                    这些照片真的很好看，
-                                    <br />
-                                    因为有你在:)
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />
+                                    Donec ultrices sed augue sed tincidunt. <br />
+                                    Curabitur laoreet neque nisl, non volutpat ipsum rhoncus ut.
                                 </p>
                                 <span>♡</span>
                             </div>
@@ -999,7 +988,7 @@ function App() {
                                             <h3>For You</h3>
                                         </div>
                                         <span className="her-video-number">
-                                            24 / 10
+                                            dd / mm
                                         </span>
                                     </div>
 
@@ -1008,13 +997,13 @@ function App() {
                                         controls
                                         playsInline
                                         preload="metadata"
-                                        poster="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Images/PLAY%20ME.webp"
+                                        poster="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc49HC_qo15wMEoYZAvadrLqv3QEnc92yZYPCKBEPohdNFWuDu7HHHLnWb&s=10"
                                         onPlay={handleVideoPlay}
                                         onPause={handleVideoPause}
                                         onEnded={handleVideoEnded}
                                     >
                                         <source
-                                            src="https://fribzjcwqyveydprvxkc.supabase.co/storage/v1/object/public/wen-birthday-public/Videos/video-ucapan.mp4"
+                                            src="https://youtu.be/Aq5WXmQQooo?si=Aq_v1WAZtKXqeVF8"
                                             type="video/mp4"
                                         />
                                         Browser kamu tidak mendukung video.
@@ -1041,44 +1030,29 @@ function App() {
                                     <p>A LETTER FOR YOU</p>
                                 </div>
 
-                                <h2>Dear 温云花 ❤️,</h2>
+                                <h2>Dear (Her Name),</h2>
 
                                 <div className="letter-content">
                                     <p>
-                                        写到这里，我只想先谢谢耶稣，<br />
-                                        谢谢祂让我遇见了这么优秀、这么漂亮、也这么可爱的你。
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />
+                                        Curabitur vitae massa sed turpis pellentesque consectetur.
+
                                     </p>
 
                                     <p>
-                                        好像真的没有什么话可以形容我现在的心情，<br />
-                                        除了感谢，还是感谢。
+                                        Sed tempor arcu in efficitur sagittis. Pellentesque ut sapien massa.<br />
+                                        Quisque diam justo, ultrices id diam ultrices, mattis fermentum nisi.
                                     </p>
 
                                     <p>
-                                        感谢能够成为你的另一半，<br />
-                                        能够成为你的男朋友，<br />
-                                        也希望以后，我可以一直陪着你，<br />
-                                        成为你第二个可以回去的家，<br />
-                                        一直到很久很久以后，直到永远。
-                                    </p>
-
-                                    <p>
-                                        愿上帝一直祝福你的生活、你的家人，还有你的工作。
-                                    </p>
-
-                                    <p>
-                                        我想对你说的话其实只有一句：<br />
-                                        无论以后遇到什么，<br />
-                                        都要记得，在每一个生命的阶段里，依靠上帝。
-                                    </p>
-
-                                    <p>
-                                        愿祂一直带领你，也一直与你同在。
+                                        Ut sit amet sapien ullamcorper, mattis lorem ac, cursus dui. <br />
+                                        onec ultrices sed augue sed tincidunt. <br />
+                                        Curabitur laoreet neque nisl, non volutpat ipsum rhoncus ut.<br />
                                     </p>
 
                                     <p className="letter-placeholder">
-                                        —— 来自你最爱的人，<br />
-                                        朱有贤
+                                        From，<br />
+                                        Your Name
                                     </p>
                                 </div>
 
@@ -1123,37 +1097,23 @@ function App() {
                                     <div className="final-reveal">
                                         <div className="final-heart">♥</div>
                                         <p className="eyebrow">HAPPY BIRTHDAY</p>
-                                        <h2>温云花</h2>
-                                        <div className="final-age">24</div>
+                                        <h2>(Her Name)</h2>
+                                        <div className="final-age">XX</div>
 
                                         <div className="final-message">
                                             <p>
-                                                愿这一年，祝福满满地临到你，<br />
-                                                愿你远离一切危险，<br />
-                                                远离所有的悲伤，<br />
-                                                也愿上帝将喜乐充满在你的生命中。
-                                            </p>
-
-                                            <p>
-                                                上帝已经陪伴你走过了24年，<br />
-                                                愿你在新的一岁里越来越成熟，<br />
-                                                也越来越爱上帝。
-                                            </p>
-
-                                            <p>
-                                                愿上帝继续陪伴你走过新的一岁，<br />
-                                                也愿你把生命中的一切，<br />
-                                                都交托在上帝的手中。
-                                            </p>
-
-                                            <p>
-                                                最后，生日快乐，温云花。<br />
-                                                愿你岁岁欢愉，平安喜乐。
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />
+                                                Curabitur vitae massa sed turpis pellentesque consectetur. <br />
+                                                Sed tempor arcu in efficitur sagittis. Pellentesque ut sapien massa. <br />
+                                                Quisque diam justo, ultrices id diam ultrices, mattis fermentum nisi. <br />
+                                                Ut sit amet sapien ullamcorper, mattis lorem ac, cursus dui. <br />
+                                                Donec ultrices sed augue sed tincidunt. <br />
+                                                Curabitur laoreet neque nisl, non volutpat ipsum rhoncus ut.
                                             </p>
                                         </div>
 
                                         <p className="final-signature">
-                                            Always love u ❤️
+                                            Always love u
                                         </p>
                                     </div>
                                 )}
@@ -1173,7 +1133,7 @@ function App() {
                             maxLength={10000}
                         />
                         <p className="final-signature">
-                            note: nggak menerima short messages :)
+                            note: (your note)
                         </p>
 
                         <div className="reply-footer">
@@ -1194,7 +1154,7 @@ function App() {
                     <footer className="footer">
                         <p>made with love</p>
                         <span>♡</span>
-                        <p>by Elsen Wuiri</p>
+                        <p>by your name</p>
                     </footer>
                 </main>
             )}

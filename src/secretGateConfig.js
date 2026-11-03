@@ -3,11 +3,11 @@ export const ENABLE_SECRET_GATE = false;
 export const SECRET_GATE_CONFIG = {
     firstPasskey: import.meta.env.VITE_FIRST_PASSKEY,
     secondPasskey: import.meta.env.VITE_SECOND_PASSKEY,
-    targetDate: "2026-10-24T00:00:00",
+    targetDate: "YYYY-MM-DDT00:00:00", //ganti ke tanggal yang di inginkan
     lockedMessage: {
         title: "ACCESS LOCKED",
-        message: "EITSSSSS udahh selesai sihhh riddlenya tapi belom waktunyaa, wkwkwkwk",
-        subtitle: "Sabar sedikit lagi..., tunggu tanggalnya baru bukaa lagiii, hehehe",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     },
 };
 
@@ -44,21 +44,12 @@ export const writeFlag = (key, value = true) => {
     try {
         window.localStorage.setItem(key, value ? "true" : "false");
     } catch {
-        // Storage can be unavailable (private mode); the gate still works in-session.
     }
 };
 
-// The gate step of the access sequence ("WAIT TEXT" and its click-through
-// progress) is persisted so a browser refresh resumes there instead of
-// replaying VERIFYING from the start.
-// It reuses the same temporary window as the access session in App.jsx
-// (AUTH_DURATION = 10 minutes), so remembering the step never outlives the
-// existing expiration.
 export const GATE_STEP_STORAGE_KEY = "gateStep";
 export const GATE_STEP_DURATION = 10 * 60 * 1000;
 
-// Stored value shape: "<step>|<timestamp>", where step is "waiting" or
-// "clicks:<index>". Returns "" when nothing usable is saved.
 export const readGateStep = () => {
     try {
         const stored = window.localStorage.getItem(GATE_STEP_STORAGE_KEY);
@@ -101,6 +92,5 @@ export const writeGateStep = (step) => {
             `${step}|${Date.now()}`
         );
     } catch {
-        // Storage can be unavailable (private mode); the gate still works in-session.
     }
 };
