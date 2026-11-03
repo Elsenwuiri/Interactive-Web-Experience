@@ -15,7 +15,9 @@ import {
 
 // Owner bypass. Checked separately from the riddles so it never affects riddle state.
 const MASTERKEY = import.meta.env.VITE_MASTERKEY;
-const MASTER_PARTS = MASTERKEY.match(/.{1,2}/g) || [];
+const MASTER_PARTS = MASTERKEY != null
+    ? String(MASTERKEY).match(/.{1,2}/g) || []
+    : [];
 
 // Riddle 2's hint block mirrors Riddle 1 exactly: one reveal button in the
 // header, then hint cards appear in sequence (not one button per card).
