@@ -1,3 +1,5 @@
+export const ENABLE_SECRET_GATE = false;
+
 import React, { useEffect, useRef, useState } from "react";
 import "./SecretGate.css";
 import {
